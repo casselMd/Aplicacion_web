@@ -1,0 +1,23 @@
+{
+    "name": "delicias/libraries",
+    "description": "Librerías del proyecto Delicias",
+    "type": "library",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Delicias\\Libraries\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Deybi Urupeque",
+            "email": "urupequechumiquedeyvi@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "kreait/firebase-php": "^5.26",
+        "firebase/php-jwt": "^6.11",
+        "phpmailer/phpmailer": "^6.11"
+    }
+}
