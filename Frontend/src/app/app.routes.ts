@@ -1,17 +1,16 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
+import { GoogleCallbackComponent } from './Auth/google-callback/google-callback.component';
+import { LoginComponent } from './Auth/login/login.component';
+import { ForgotPasswordComponent } from './Auth/forgot-password/forgot-password.component';
+import { ResetPasswordComponent } from './Auth/reset-password/reset-password.component';
 
 export const routes: Routes = [
-  {
-    path: '',
-    redirectTo: 'login',
-    pathMatch: 'full',
-  },
-  {
-    path: 'login',
-    loadComponent: () => import('src/app/Pages/Login/login.page').then((m) => m.LoginPage),
-  },
-  {
-    path: 'home',
-    loadComponent: () => import('./home/home.page').then((m) => m.HomePage),
-  },
+  { path: 'login', component: LoginComponent },
+  { path: 'Auth/google/callback', component: GoogleCallbackComponent},
+  {path: 'Auth/recuperar-password',   component: ForgotPasswordComponent},
+  {path: 'Auth/reset-password',component: ResetPasswordComponent},
+
+
+  {path : "**" , redirectTo: "login"},
 ];

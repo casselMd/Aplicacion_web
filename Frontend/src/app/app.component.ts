@@ -5,6 +5,7 @@ import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
   selector: 'app-root',
   templateUrl: 'app.component.html',
   imports: [IonApp, IonRouterOutlet],
+  styleUrl: './app.component.css'
 })
 export class AppComponent {
   constructor() {}
