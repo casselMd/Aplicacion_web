@@ -1,0 +1,138 @@
+/* ===============================
+   🔐 LOGIN - PANADERÍA DELICIAS
+   =============================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Pacifico&display=swap');
+
+ion-content.login-content {
+  --background: linear-gradient(135deg, #e0f2fe, #f8fafc, #dbeafe);
+  font-family: 'Poppins', sans-serif;
+}
+
+.login-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 1.5rem;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(16px);
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+  padding: 2rem;
+  text-align: center;
+  border: 1px solid rgba(240, 249, 255, 0.5);
+}
+
+/* Título */
+.titulo-app {
+  font-family: 'Pacifico', cursive;
+  font-size: 2.2rem;
+  color: #1d4ed8;
+  margin-bottom: 0.5rem;
+}
+
+/* Inputs */
+ion-item.input-item {
+  --background: transparent;
+  --border-color: #bfdbfe;
+  --highlight-color-focused: #1d4ed8;
+  color: #1e3a8a;
+  border-radius: 1rem;
+  margin-bottom: 1rem;
+  --padding-start: 0.8rem;
+  --inner-padding-end: 0.8rem;
+  box-shadow: 0 2px 6px rgba(30, 58, 138, 0.1);
+}
+
+ion-icon.input-icon {
+  color: #2563eb;
+}
+
+ion-input.input-field {
+  font-size: 1rem;
+  color: #1e293b;
+}
+
+/* Botón principal */
+.btn-login {
+  --background: linear-gradient(90deg, #3b82f6, #2563eb, #1d4ed8);
+  --background-hover: linear-gradient(90deg, #2563eb, #1d4ed8);
+  --border-radius: 1.5rem;
+  font-weight: 600;
+  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+  margin-top: 0.5rem;
+}
+
+/* Botón Google */
+.btn-google {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  border-radius: 1.5rem;
+  --border-color: #cbd5e1;
+  --color: #334155;
+  background: #fff;
+  font-weight: 500;
+  text-transform: none;
+  transition: all 0.3s ease;
+}
+
+.btn-google:hover {
+  background: #f1f5f9;
+  box-shadow: 0 4px 10px rgba(30, 41, 59, 0.1);
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* Enlace recuperar contraseña */
+.recuperar-link {
+  display: inline-block;
+  margin-top: 1rem;
+  color: #2563eb;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.recuperar-link:hover {
+  color: #1d4ed8;
+}
+
+/* Frase y derechos */
+.footer-text {
+  text-align: center;
+  margin-top: 1.5rem;
+  font-size: 0.8rem;
+  color: #475569;
+}
+
+.slogan {
+  font-style: italic;
+  color: #1e40af;
+  margin-bottom: 0.3rem;
+}
+
+.derechos {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+/* Imagen lateral */
+.imagen-section {
+  margin-top: 1.2rem;
+}
+
+.imagen-logo {
+  width: 90px;
+  opacity: 0.9;
+}

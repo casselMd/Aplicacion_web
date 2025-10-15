@@ -5,23 +5,27 @@ import { Router, RouterLinkWithHref } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService, getPayloadToken } from '../../services/auth.service';
 import { environment } from '../../../environments/environment';
+import { IonButton, IonContent, IonIcon, IonItem } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { lockClosedOutline, logoIonic, personOutline } from 'ionicons/icons';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ReactiveFormsModule, RouterLinkWithHref],
+    imports: [ReactiveFormsModule, RouterLinkWithHref, IonContent, IonItem, IonIcon, IonButton],
     templateUrl: './login.component.html',
     styleUrl: './login.component.css'
 })
     export class LoginComponent {
     loginForm: FormGroup;
     constructor(private fb: FormBuilder,
-        private authService: AuthService, 
+        private authService: AuthService,
         private router:Router) {
         this.loginForm = this.fb.group({
             username: ['', [Validators.required]],
             password: ['', Validators.required]
         });
+         addIcons({personOutline,lockClosedOutline});
     }
 
     onSubmit() {
@@ -52,7 +56,7 @@ import { environment } from '../../../environments/environment';
                 Swal.fire('Error', 'Error de conexión con el servidor', 'error');
             }
             });
-        
+
         }else{
         Swal.fire('Error', 'Ingresa tu correo y contraseña para continuar', 'warning');
         }
@@ -60,13 +64,13 @@ import { environment } from '../../../environments/environment';
 
 
 
-        /****  
+        /****
          * Login con Google
         */
         loginConGoogle() {
         const clientId = environment.client_id;
         const redirectUri = "http://localhost/Delicias/Backend/AuthGoogle/callback";
-                            
+
         const scope = 'email profile';
         const responseType = 'code';
 
