@@ -1,83 +1,87 @@
-import { IonicModule } from '@ionic/angular';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
-import { BehaviorSubject } from 'rxjs';
 import { Router, RouterLinkWithHref } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService, getPayloadToken } from '../../services/auth.service';
 import { environment } from '../../../environments/environment';
-import { IonButton, IonContent, IonIcon, IonItem } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { lockClosedOutline, logoIonic, personOutline } from 'ionicons/icons';
+import { lockClosedOutline, personOutline } from 'ionicons/icons';
 import { CommonModule } from '@angular/common';
+import {
+  IonButton, IonContent, IonIcon, IonItem, IonInput
+} from '@ionic/angular/standalone';
 
 @Component({
-    selector: 'app-login',
-    standalone: true,
-    imports: [ReactiveFormsModule, RouterLinkWithHref, IonContent, IonItem, IonIcon, IonButton, CommonModule, FormsModule,  IonicModule],
-    templateUrl: './login.component.html',
-    styleUrl: './login.component.css'
+  selector: 'app-login',
+  standalone: true,
+  imports: [
+    ReactiveFormsModule,
+    RouterLinkWithHref,
+    IonContent,
+    IonItem,
+    IonIcon,
+    IonButton,
+    IonInput,
+    CommonModule,
+    FormsModule
+  ],
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
 })
-    export class LoginComponent {
-    loginForm: FormGroup;
-    constructor(private fb: FormBuilder,
-        private authService: AuthService,
-        private router:Router) {
-        this.loginForm = this.fb.group({
-            username: ['', [Validators.required]],
-            password: ['', Validators.required]
-        });
-         addIcons({personOutline,lockClosedOutline});
-    }
+export class LoginComponent {
+  loginForm: FormGroup;
 
-    onSubmit() {
-        if (this.loginForm.valid) {
-            this.authService.login(this.loginForm.value).subscribe({
-            next: (response) => {
-                if (response.status) {
-                const token = response.data.access_token;
-                const tokenEmp = response.data.token_empleado;
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
+    this.loginForm = this.fb.group({
+      username: ['', [Validators.required]],
+      password: ['', Validators.required]
+    });
 
-                localStorage.setItem('token', token);
-                localStorage.setItem('token_emp', tokenEmp);
+    addIcons({ personOutline, lockClosedOutline });
+  }
 
-                const payload = getPayloadToken(tokenEmp);
-                if (payload && payload.data.rol) {
-                    this.authService.setRol(payload.data.rol); // Aquí actualizas el rol
-                }
-                console.log(response);
+  onSubmit() {
+    if (this.loginForm.valid) {
+      this.authService.login(this.loginForm.value).subscribe({
+        next: (response) => {
+          if (response.status) {
+            const token = response.data.access_token;
+            const tokenEmp = response.data.token_empleado;
 
-                this.router.navigate(['/']);
-                } else {
-                // Aquí puedes mostrar un mensaje con SweetAlert o snackbar
-                Swal.fire('Error', response.msg, 'error');
-                }
-            },
-            error: (err) => {
-                console.error('Error en login:', err);
-                Swal.fire('Error', 'Error de conexión con el servidor', 'error');
+            localStorage.setItem('token', token);
+            localStorage.setItem('token_emp', tokenEmp);
+
+            const payload = getPayloadToken(tokenEmp);
+            if (payload && payload.data.rol) {
+              this.authService.setRol(payload.data.rol);
             }
-            });
 
-        }else{
-        Swal.fire('Error', 'Ingresa tu correo y contraseña para continuar', 'warning');
+            this.router.navigate(['/']);
+          } else {
+            Swal.fire('Error', response.msg, 'error');
+          }
+        },
+        error: (err) => {
+          console.error('Error en login:', err);
+          Swal.fire('Error', 'Error de conexión con el servidor', 'error');
         }
+      });
+    } else {
+      Swal.fire('Error', 'Ingresa tu correo y contraseña para continuar', 'warning');
     }
+  }
 
+  loginConGoogle() {
+    const clientId = environment.client_id;
+    const redirectUri = 'http://localhost/Delicias/Backend/AuthGoogle/callback';
+    const scope = 'email profile';
+    const responseType = 'code';
 
-
-        /****
-         * Login con Google
-        */
-        loginConGoogle() {
-        const clientId = environment.client_id;
-        const redirectUri = "http://localhost/Delicias/Backend/AuthGoogle/callback";
-
-        const scope = 'email profile';
-        const responseType = 'code';
-
-        const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
-        window.location.href = url;
-    }
-
+    const url = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=${responseType}&scope=${scope}`;
+    window.location.href = url;
+  }
 }
