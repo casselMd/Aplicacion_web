@@ -1,5 +1,6 @@
+import { IonicModule } from '@ionic/angular';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { BehaviorSubject } from 'rxjs';
 import { Router, RouterLinkWithHref } from '@angular/router';
 import Swal from 'sweetalert2';
@@ -8,11 +9,12 @@ import { environment } from '../../../environments/environment';
 import { IonButton, IonContent, IonIcon, IonItem } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { lockClosedOutline, logoIonic, personOutline } from 'ionicons/icons';
+import { CommonModule } from '@angular/common';
 
 @Component({
     selector: 'app-login',
     standalone: true,
-    imports: [ReactiveFormsModule, RouterLinkWithHref, IonContent, IonItem, IonIcon, IonButton],
+    imports: [ReactiveFormsModule, RouterLinkWithHref, IonContent, IonItem, IonIcon, IonButton, CommonModule, FormsModule,  IonicModule],
     templateUrl: './login.component.html',
     styleUrl: './login.component.css'
 })
