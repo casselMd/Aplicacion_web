@@ -1,0 +1,114 @@
+    <!-- Formulario principal -->
+    <form [formGroup]="ventaForm">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+
+        <!-- Cliente -->
+        <div>
+            <label class="block font-semibold mb-1">Cliente</label>
+            <select formControlName="cliente_id" class="w-full bg-card border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out">
+            <option [value]="null">-- Seleccionar --</option>
+            <option *ngFor="let c of clientes" [value]="c.id">{{ c.cliente }}</option>
+            </select>
+        </div>
+
+        <!-- Método de Pago -->
+        <div>
+            <label class="block font-semibold mb-1">Método de Pago</label>
+            <select formControlName="metodo_pago_id" class="w-full bg-card border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out">
+            <option [value]="null">-- Seleccionar --</option>
+            <option *ngFor="let mp of metodosPago" [value]="mp.id">{{ mp.metodo_pago }}</option>
+            </select>
+        </div>
+
+
+    <hr class="my-6 opacity-10" />
+
+    <!-- Sección para agregar productos -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+        <!-- Autocompletado de producto -->
+        <h1 class="col-span-1 md:col-span-3 text-xl font-bold ">Registrar Productos</h1>
+        <div class="relative w-full" matAutocompleteOrigin #origin="matAutocompleteOrigin">
+                <input
+                type="text"
+                matInput
+                [formControl]="controlProducto"
+                [matAutocomplete]="auto"
+                [matAutocompleteConnectedTo]="origin"
+                [matAutocompleteDisabled]="productos.length === 0"
+                placeholder="Buscar producto"
+                class="bg-card w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+                
+                />
+        </div>
+        <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption [displayWith]="displayFn">
+            <mat-option
+            *ngFor="let option of productosFiltrados$ | async"
+            [value]="option"
+            class="!bg-gray-100 !text-gray-800 hover:!bg-gray-200"
+            >
+            {{ option.nombre }}
+            </mat-option>
+        </mat-autocomplete>
+        
+
+        <!-- Precio -->
+        <div>
+        <label class="block font-semibold mb-1">Precio</label>
+        <input type="number" [(ngModel)]="producto.precio " class="w-full bg-card border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out" disabled />
+        </div>
+
+        <!-- Cantidad -->
+        <div>
+        <label class="block font-semibold mb-1">Cantidad</label>
+        <input type="number" [(ngModel)]="producto.cantidad" min="1"  class="w-full bg-card border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out" />
+        </div>
+
+        <!-- Botón Agregar -->
+        <div class="md:col-span-3 text-right">
+        <button (click)="addProducto()" type="button"
+            class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700">
+            Agregar producto
+        </button>
+        </div>
+    </div>
+
+    <!-- Tabla de productos agregados -->
+    <div *ngIf="detalles.length > 0 " class="mt-6 overflow-x-auto bg-card rounded-t-lg">
+        <table class="bg-card w-full text-sm  ">
+        <thead>
+            <tr class="bg-tabla text-left bg-opacity-25  uppercase">
+            <th class=" px-3 py-2">Producto</th>
+            <th class=" px-3 py-2">Precio</th>
+            <th class=" px-3 py-2">Cantidad</th>
+            <th class=" px-3 py-2">Subtotal</th>
+            <th class=" px-3 py-2 text-center">Acción</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 divide-opacity-5">
+            <tr *ngFor="let d of detalles; let i = index" class="hover:bg-nocturne-purple hover:bg-opacity-60">
+            <td class=" px-3 py-2">{{ d.nombre }}</td>
+            <td class=" px-3 py-2">{{ d.precio_unitario | currency:'S/.' }}</td>
+            <td class=" px-3 py-2">{{ d.cantidad }}</td>
+            <td class=" px-3 py-2">{{ d.subtotal | currency:'S/.' }}</td>
+            <td class=" px-3 py-2 text-center">
+                <button (click)="removeDetalle(i)" type="button"
+                class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">
+                Eliminar
+                </button>
+            </td>
+            </tr>
+        </tbody>
+        </table>
+
+        <!-- Total -->
+        <div class="text-right mt-4 text-lg font-bold">
+        Total: {{ getTotal() | currency:'S/.' }}
+        </div>
+    </div>
+
+    <!-- Botón Registrar -->
+    <div class="mt-6 text-right">
+        <button (click)="registrarVenta()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+        {{ ventaEditar ? 'Actualizar Venta': 'Registrar Venta'}}
+        </button>
+    </div>

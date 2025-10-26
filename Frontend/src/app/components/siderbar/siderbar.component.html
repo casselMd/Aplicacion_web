@@ -1,0 +1,13 @@
+<!-- sidebar.component.html -->
+<div
+    class="w-full transition-all duration-300 hover:w-full group flex flex-col overflow-y-scroll scrollbar-hide"
+    >
+    <ng-container *ngFor="let item of itemMenu; let i = index">
+        <app-sidebar-item
+        [icon]="item.icon"
+        [text]="item.text"
+        [route]="item.route"
+        >
+        </app-sidebar-item>
+    </ng-container>
+</div>

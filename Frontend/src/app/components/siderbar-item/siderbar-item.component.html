@@ -1,0 +1,19 @@
+    <!-- sidebar-item.component.html -->
+    <li
+    class="relative flex items-center p-4 group cursor-pointer transition-colors duration-300 rounded-md 
+            hover:bg-gradient-to-r hover:from-card hover:to-background"
+    (click)="navigate()"
+    >
+    <!-- Ícono siempre visible -->
+    <i
+        [class]="icon + ' text-white text-xl transition-transform duration-300 group-hover:scale-110'"
+    ></i>
+
+    <!-- Texto oculto hasta hover del padre -->
+    <span
+        class="text-white overflow-hidden whitespace-nowrap transition-all duration-300
+            max-w-0 opacity-0 group-hover:ml-2 group-hover:max-w-xs group-hover:opacity-100"
+    >
+        {{ text }}
+    </span>
+    </li>

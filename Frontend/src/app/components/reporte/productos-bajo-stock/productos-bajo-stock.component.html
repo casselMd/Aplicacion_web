@@ -1,0 +1,41 @@
+    <!-- notificaciones.component.html -->
+    <button (click)="abrirModal()" class="relative focus:outline-none" title="Productos con stock mínimo">
+    <i class="fas fa-bell text-white text-xl"></i>
+    <span *ngIf="productosStockBajo.length > 0"
+        class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
+    </button>
+
+    <!-- Modal -->
+    <div *ngIf="mostrar" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div class="bg-card rounded-xl shadow-xl p-8 max-w-lg w-full">
+        <div class="flex justify-between mb-4">
+        <h2 class="text-xl font-bold text-text text-center ">Productos con stock mínimo</h2>
+        <button (click)="cerrarModal()" class="text-red-600 hover:text-red-800 ">✕</button>
+        </div>
+
+        <div *ngIf="productosStockBajo.length > 0; else noStock">
+        <div class="overflow-x-auto rounded-xl">
+            <table class="w-full text-sm ">
+                <thead class="bg-tabla text-text uppercase bg-opacity-25 text-center">
+                <tr>
+                    <th class="px-3 py-2 ">ID</th>
+                    <th class="px-3 py-2">Producto</th>
+                    <th class="px-3 py-2">Stock</th>
+                </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 divide-opacity-5">
+                <tr *ngFor="let p of productosStockBajo" class=" hover:bg-nocturne-purple hover:bg-opacity-60 text-center">
+                    <td class="px-3 py-2">{{ p.id }}</td>
+                    <td class="px-3 py-2">{{ p.nombre }}</td>
+                    <td class="px-3 py-2">{{ p.stock }}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        </div>
+
+        <ng-template #noStock>
+        <p class="text-center text-gray-600">No hay productos con stock bajo</p>
+        </ng-template>
+    </div>
+    </div>

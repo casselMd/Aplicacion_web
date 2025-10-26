@@ -1,0 +1,20 @@
+    <!-- productos-mas-vendidos.component.html -->
+    <div class="bg-background rounded-lg shadow-lg p-6">
+        <div class="relative h-64">
+        <canvas
+            baseChart
+            [data]="pieData"
+            [type]="'doughnut'"
+            [options]="pieOptions"
+            class="w-full h-full">
+            
+        </canvas>
+        <!-- Texto centrado en el centro del gráfico -->
+            <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <span class="text-center text-text text-lg font-semibold leading-tight">
+                Productos <br /> más Vendidos
+            </span>
+            </div>
+        </div>
+        
+    </div>

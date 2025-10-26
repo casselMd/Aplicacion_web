@@ -1,0 +1,132 @@
+<!-- Layout completo -->
+<div class="h-[100vh] overflow-hidden flex flex-col bg-background text-text font-sans">
+
+    <!-- Banner fijo en la parte superior -->
+    <div class="fixed top-0 left-3 w-[96%] z-50 bg-card text-white flex items-center justify-between px-6 py-2 shadow-lg rounded-full mt-1 ml-3 mr-3 mb-2" >
+        <!-- Nombre de la empresa con logo -->
+        <div class="flex items-center space-x-2 text-xl font-semibold">
+        <img src="aqui_coloca_la_ruta_del_logo_cesar" alt="Logo" class="w-8 h-8 object-cover rounded-full  " />
+        <span>Amazon Coffee</span>
+        </div>
+
+
+        <div class="flex items-center space-x-4">
+
+        <div class="text-text">
+        {{nombreEmpleado}}
+        </div>
+        <!-- Notificaciones -->
+        <app-productos-bajo-stock
+            class="relative focus:outline-none"
+            title="Productos con stock mínimo">
+            
+        </app-productos-bajo-stock>
+
+        <!-- Imagen de perfil -->
+        <img
+            
+            [src]="empleado?.imagen_url || placeholder_svg"
+            alt="Perfil"
+            class="w-9 h-9 rounded-full object-cover border-2 border-white cursor-pointer"
+            (click)="abrirModalPerfil()"
+            title="Perfil"
+        />
+        <!-- <i *ngIf="!empleado?.imagen_url" class="fas fa-user-circle text-white text-2xl" (click)="abrirModalPerfil()" title="Perfil"></i> -->
+
+
+
+        <!-- Cerrar sesión -->
+        <button (click)="cerrarSesion()" title="Cerrar sesión">
+            <i class="fas fa-sign-out-alt text-white text-xl"></i>
+        </button>
+        </div>
+    </div>
+
+    <!-- Contenido debajo del banner -->
+    <div class="flex flex-1 pt-[60px] gap-6 px-6 pb-6 overflow-hidden">
+        
+        <!-- SIDEBAR -->
+        <app-sidebar
+        class="group relative w-16 hover:w-64 transition-all duration-300 
+                bg-card text-white overflow-y-auto scrollbar-hide p-2 flex flex-col rounded-xl">
+        </app-sidebar>
+
+        <!-- MAIN -->
+        <main class="flex-1 h-full overflow-y-auto scrollbar-hide bg-card rounded-2xl shadow-card">
+        <router-outlet></router-outlet>
+        </main>
+    </div>
+    </div>
+
+
+    <!-- Perfil personal -->
+    <div *ngIf="mostrarModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-card rounded-xl p-8 w-full max-w-xl space-y-6 shadow-xl">
+        
+        <!-- Encabezado con foto -->
+        <div class="flex flex-col md:flex-row items-center justify-between">
+        <div class="flex items-center space-x-4">
+            <img
+            [src]="empleado?.imagen_url || placeholder_svg"
+            alt="Foto de perfil"
+            class="w-20 h-20 rounded-full object-cover border-2 border-white"
+            />
+            <div>
+            <h2 class="text-2xl font-bold text-text">Mi Perfil</h2>
+            <p class="text-text text-sm">{{ empleado.rol }}</p>
+            </div>
+        </div>
+        <button type="button" (click)="cerrarModal()" class="text-white text-2xl hover:text-red-400 mt-4 md:mt-0">
+            ✕
+        </button>
+        </div>
+
+        <!-- Datos personales -->
+        <form [formGroup]="perfilForm" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+            <label class="block text-sm font-medium text-text">Nombre</label>
+            <input formControlName="nombre" [disabled]="!modoEdicion" class="w-full bg-card text-text border p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+            <div>
+            <label class="block text-sm font-medium text-text">Apellidos</label>
+            <input formControlName="apellidos" [disabled]="!modoEdicion" class="w-full bg-card text-text border p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+            <div class="md:col-span-2">
+            <label class="block text-sm font-medium text-text">DNI</label>
+            <input formControlName="dni" [disabled]="!modoEdicion" class="w-full bg-card text-text border p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+        </div>
+
+        <div class="flex justify-end space-x-2 mt-4">
+            <button type="button" (click)="activarEdicion()" *ngIf="!modoEdicion" class="bg-indigo-500 text-white px-4 py-2 rounded">Editar</button>
+            <button type="button" (click)="actualizarDatos()" *ngIf="modoEdicion" class="bg-green-600 text-white px-4 py-2 rounded">Actualizar</button>
+        </div>
+        </form>
+
+        <hr class="opacity-30" />
+
+        <!-- Actualizar credenciales -->
+        <div>
+        <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded mb-3" (click)="mostrarCredenciales = !mostrarCredenciales">
+            {{ mostrarCredenciales ? 'Ocultar' : 'Actualizar Credenciales' }}
+        </button>
+
+        <form *ngIf="mostrarCredenciales" [formGroup]="credencialesForm" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block text-sm font-medium text-text">Usuario</label>
+                <input formControlName="username" class="w-full bg-card text-text border p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-text">Contraseña</label>
+                <input type="password" formControlName="password" class="w-full bg-card text-text border p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+            </div>
+            </div>
+            <div class="flex justify-end">
+            <button type="button" (click)="actualizarCredenciales()" class="bg-indigo-600 text-white px-4 py-2 rounded">Guardar Cambios</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
