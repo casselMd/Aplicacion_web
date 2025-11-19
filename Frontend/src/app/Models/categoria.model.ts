@@ -1,6 +1,7 @@
-export interface Categoria {
+
+    export interface Categoria {
     id: number;
-    categoria: String;
+    categoria: string; // nombre de la categoría
     descripcion: string;
     status: number;
-}
+    }

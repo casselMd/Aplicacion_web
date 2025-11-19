@@ -1,0 +1,187 @@
+    <div class="p-6">
+    <!-- Encabezado de Navegación -->
+    <div class="grid grid-cols-2 mb-6">
+        <h1 class="text-2xl font-bold text-text">Listado de Compras</h1>
+        <div class="place-items-center">
+        <nav class="bg-mountain-950 p-4 rounded shadow-md">
+            <ul class="flex space-x-4">
+            <li>
+                <a routerLink="/compra/registrar" class="inline-flex items-center py-2 px-3 border-b-2 border-transparent hover:border-indigo-400 hover:text-indigo-400  ">
+                <i class="fa-solid fa-plus"></i>
+                <div class="ml-2">Registrar</div>
+                </a>
+            </li>
+            <li>
+                <a routerLink="/compra/listar" class="inline-flex items-center py-2 px-3 border-b-2   border-indigo-400 text-indigo-400">
+                <i class="fa-solid fa-list"></i>
+                <div class="ml-2">Listar</div>
+                </a>
+            </li>
+            </ul>
+        </nav>
+        </div>
+    </div>
+    <div class="flex items-center justify-between mb-4">
+
+    <input
+        type="text"
+        [(ngModel)]="filtro"
+        (input)="filtrarCompras()"
+        placeholder="Buscar por ID o N° de documento"
+        class="bg-card px-4 py-2 border  rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 w-72"
+    />
+    </div>
+
+
+    <div *ngIf="compras.length === 0" class="text-gray-600">
+        No hay compras registradas.
+    </div>
+
+    <div *ngIf="compras.length > 0" class="overflow-auto rounded-xl">
+    <table class="min-w-full bg-card rounded-lg shadow-lg">
+        <thead class="bg-tabla text-text text-sm uppercase text-left bg-opacity-25">
+        <tr>
+            <th class="px-4 py-2">ID</th>
+            <th class="px-4 py-2">Fecha</th>
+            <th class="px-4 py-2">N° DocumentoS</th>
+            <th class="px-4 py-2">Proveedor</th>
+            <th class="px-4 py-2">RUC</th>
+            <th class="px-4 py-2">Empleado</th>
+            <th class="px-4 py-2">DNI Empleado</th>
+            <th class="px-4 py-2">Total</th>
+            <th class="px-4 py-2">Estado</th>
+            <th class="px-4 py-2 text-center">Acciones</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let compra of comprasFiltradas" class="hover:bg-nocturne-purple hover:bg-opacity-60">
+            <td class="px-4 py-2">{{ compra.id }}</td>
+            <td class="px-4 py-2">{{ compra.fecha }}</td>
+            <td class="px-4 py-2">{{ compra.numero_documento }}</td>
+            <td class="px-4 py-2">{{ compra.proveedor.nombre }}</td>
+            <td class="px-4 py-2">{{ compra.proveedor.ruc }}</td>
+            <td class="px-4 py-2">{{ compra.empleado.nombre }}</td>
+            <td class="px-4 py-2">{{ compra.empleado.dni }}</td>
+            <td class="px-2 py-2">{{ compra.total | currency:'S/.' }}</td>
+            <td class="px-4 py-2">
+            <span
+                class="px-2 py-1 rounded-full text-xs font-medium"
+                [ngClass]="{
+                'bg-green-100 text-green-800': compra.status === 1,
+                'bg-red-100 text-red-800': compra.status === 0
+                }"
+            >
+                {{ compra.status ? "activo" : "inactivo" }}
+            </span>
+            </td>
+            <td class="px-1 py-2 text-center  ">
+            <div class="flex justify-center items-center space-x-2">
+                
+                <button
+                title="Ver"
+                class="bg-indigo-600  text-white px-2 py-1 rounded hover:bg-indigo-700 transition"
+                (click)="verCompra(compra.id)"
+                >
+                <i class="fa-solid fa-eye fa-lg"></i>
+                </button>
+                <button title="Descargar PDF"
+                class="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 float-right"
+                (click)="generarPDF(compra.id)">
+                <i class="fa-regular fa-file-pdf fa-xl"></i>
+                </button>
+
+                <button *ngIf="compra.status !== 1"
+                title="Cancelar"
+                class="bg-red-600  text-white px-2 py-1 rounded hover:bg-red-700 transition"
+                (click)="cancelarCompra(compra.id)"
+                >
+                <i class="fa-solid fa-trash fa-lg"></i>
+                </button>
+
+            </div>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+
+    </div>
+
+
+    <!-- Modal -->
+    <div
+    *ngIf="compraSeleccionada"
+    id="modalCompra"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+    <div
+        class="bg-card text-white rounded-lg shadow-lg p-8 w-full max-w-3xl space-y-6"
+        id="contenidoFactura"
+    >
+        <!-- Cabecera -->
+        <div class="flex justify-between items-start border-b border-white/20 pb-4">
+        <div>
+            <h1 class="text-2xl font-bold">Factura de Compra</h1>
+            <p class="text-sm text-white/70">ID: {{ compraSeleccionada.id }}</p>
+        </div>
+        <button
+            class="text-white hover:text-red-400 text-2xl"
+            (click)="cerrarModal()"
+        >
+            ✕
+        </button>
+        </div>
+
+        <!-- Datos principales -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+        <div><strong>Fecha:</strong><br />{{ compraSeleccionada.fecha }}</div>
+        <div><strong>Tipo Doc:</strong><br />{{ compraSeleccionada.tipo_documento }}</div>
+        <div><strong>N° Documento:</strong><br />{{ compraSeleccionada.numero_documento }}</div>
+
+        <div><strong>Método de Pago:</strong><br />{{ compraSeleccionada.metodo_pago.nombre }}</div>
+        <hr class="col-span-2 md:col-span-3 opacity-20" />
+
+        <div><strong>Empleado:</strong><br />{{ compraSeleccionada.empleado.nombre }}</div>
+        <div><strong>DNI:</strong><br />{{ compraSeleccionada.empleado.dni }}</div>
+        <hr class="col-span-2 md:col-span-3 opacity-20" />
+
+        <div><strong>Proveedor:</strong><br />{{ compraSeleccionada.proveedor.nombre }}</div>
+        <div><strong>RUC:</strong><br />{{ compraSeleccionada.proveedor.ruc }}</div>
+        </div>
+
+        <!-- Detalles de productos -->
+        <div>
+        <h2 class="text-lg font-semibold mt-6 mb-2">Productos comprados</h2>
+        <table class="w-full text-sm border border-white/20">
+            <thead class="bg-white/10 text-white uppercase">
+            <tr>
+                <th class="px-3 py-2 border-b border-white/20 text-left">Item</th>
+                <th class="px-3 py-2 border-b border-white/20 text-left">Producto</th>
+                <th class="px-3 py-2 border-b border-white/20 text-right">Cantidad</th>
+                <th class="px-3 py-2 border-b border-white/20 text-right">Precio Unitario</th>
+                <th class="px-3 py-2 border-b border-white/20 text-right">Subtotal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let item of compraSeleccionada.detalles; let i = index" class="hover:bg-white/10">
+                <td class="px-3 py-2 border-b border-white/10">{{ i + 1 }}</td>
+                <td class="px-3 py-2 border-b border-white/10">{{ item.producto.nombre }}</td>
+                <td class="px-3 py-2 text-right border-b border-white/10">{{ item.cantidad }}</td>
+                <td class="px-3 py-2 text-right border-b border-white/10">S/ {{ item.precio_unitario | number: '1.2-2' }}</td>
+                <td class="px-3 py-2 text-right border-b border-white/10">S/ {{ item.subtotal | number: '1.2-2' }}</td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+
+        <!-- Total -->
+        <div class="text-right font-semibold text-base">
+        Total: S/ {{ compraSeleccionada.total | number: '1.2-2' }}
+        </div>
+    </div>
+    </div>
+
+
+
+    <app-loader *ngIf="generandoPDF" [texto]="'Generando PDF...'"></app-loader>

@@ -1,6 +1,6 @@
 <?php
 
-const BASE_URL = "http://Delicias.auth";
+const BASE_URL = "http://delicias.auth";
 
 const DB_HOST = "localhost";
 const DB_NAME = "delicias_auth";

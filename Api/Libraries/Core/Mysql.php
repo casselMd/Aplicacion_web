@@ -6,7 +6,7 @@ class Mysql extends Conexion {
 
     public function __construct() {
         $this->pdo = new Conexion();
-        $this->conexion = $this->pdo->conectar();
+        $this->conexion = $this->pdo->conectar(); 
     }
 
     public function insert(string $query, array $arrValues) {

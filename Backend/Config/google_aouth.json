@@ -1,7 +1,7 @@
 {"web":{
     "client_id":"1076254956911-5oijcj6kjl4lpf1q14sc5kvvro17c6oq.apps.googleusercontent.com",
     "client_secret":"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",
-    "project_id":"ardent-fusion-474521-t2",
+    "project_id":"ardent-fusion-474521-t2", 
     "auth_uri":"https://accounts.google.com/o/oauth2/auth",
     "token_uri":"https://oauth2.googleapis.com/token",
     "auth_provider_x509_cert_url":"https://www.googleapis.com/oauth2/v1/certs"

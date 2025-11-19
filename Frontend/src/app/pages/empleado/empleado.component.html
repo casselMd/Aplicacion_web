@@ -1,0 +1,231 @@
+    <div class="bg-general-100 overflow-y-hidden p-6 rounded-lg shadow-lg">
+    <div class="flex justify-between mb-4">
+        <h1 class="text-2xl font-bold mb-4">Gestión de Empleados</h1>
+        <button 
+        type="button"
+        class="bg-background text-black bg-opacity-70 font-semibold px-2 rounded shadow hover:opacity-90 cursor-default">
+        {{ totalEmpleados }} empleados
+        </button>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-4 mb-6">
+        <button
+        class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+        (click)="abrirModal(true)">
+        <i class="fa fa-plus mr-2"></i> Agregar Empleado
+        </button>
+
+        <input
+        type="text"
+        placeholder="🔍 Buscar empleado..."
+        [(ngModel)]="filtros.termino"
+        (ngModelChange)="aplicarFiltros()"
+        class="bg-card flex-1 min-w-[200px] border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        <select
+        [(ngModel)]="filtros.estado"
+        (ngModelChange)="aplicarFiltros()"
+        class="bg-card border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        aria-label="Filtrar por estado"
+        >
+        <option [ngValue]="null">— Todos los estados —</option>
+        <option [ngValue]="1">Activo</option>
+        <option [ngValue]="0">Inactivo</option>
+        </select>
+
+        <select
+        [(ngModel)]="filtros.orden"
+        (ngModelChange)="aplicarFiltros()"
+        class="bg-card border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        aria-label="Ordenar por nombre"
+        >
+        <option value="">— Orden —</option>
+        <option value="nombre_asc">Nombre A → Z</option>
+        <option value="nombre_desc">Nombre Z → A</option>
+        </select>
+    </div>
+
+    <!-- MODAL MEJORADO -->
+    <div
+    *ngIf="modalOpen"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4"
+    >
+    <div class="bg-card rounded-2xl shadow-xl w-full max-w-lg overflow-y-auto max-h-[90vh] p-6">
+        <!-- Título -->
+        <div class="mb-6 border-b border-gray-200 pb-3">
+        <h2 class="text-2xl font-semibold text-black">
+            {{ modoEdicion ? 'Editar Empleado' : 'Registrar Empleado' }}
+        </h2>
+        </div>
+
+        <form [formGroup]="formulario" (ngSubmit)="guardar()" class="space-y-6">
+        <!-- ====== PRIMERA FILA: Nombre + Apellidos ====== -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+            <label class="block mb-1 font-medium text-black">Nombre</label>
+            <input
+                formControlName="nombre"
+                type="text"
+                placeholder="Ingresa nombre"
+                class="bg-card w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            </div>
+            <div>
+            <label class="block mb-1 font-medium text-black">Apellidos</label>
+            <input
+                formControlName="apellidos"
+                type="text"
+                placeholder="Ingresa apellidos"
+                class="bg-card w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            </div>
+        </div>
+
+        <!-- ====== SEGUNDA FILA: DNI + Username ====== -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+            <label class="block mb-1 font-medium text-black">DNI</label>
+            <input
+                formControlName="dni"
+                type="text"
+                maxlength="8"
+                placeholder="12345678"
+                class="bg-card w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            </div>
+            <div *ngIf="modoEdicion === false">
+            <label class="block mb-1 font-medium text-black">Username</label>
+            <input
+                formControlName="username"
+                type="text"
+                placeholder="Nombre de Usuario"
+                class="bg-card w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            </div>
+        </div>
+
+        <!-- Password -->
+        <div *ngIf="modoEdicion === false">
+        <label for="input-password" class="block mb-1 font-medium text-black">Password</label>
+        <input
+            id="input-password"
+            formControlName="password"
+            type="password"
+            [attr.placeholder]="modoEdicion ? 'Dejar vacío para no cambiar' : 'Escribe una contraseña'"
+            class="bg-card w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            aria-label="Contraseña"
+        />
+        </div>
+
+        <!-- Rol -->
+        <div>
+        <label for="select-rol" class="block mb-1 font-medium text-black">Rol</label>
+        <select
+            id="select-rol"
+            formControlName="rol"
+            class="bg-card w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            aria-label="Seleccionar rol"
+        >
+            <option value="" disabled>— Selecciona rol —</option>
+            <option value="admin">Administrador</option>
+            <option value="empleado">Empleado</option>
+        </select>
+        </div>
+
+        <!-- Status -->
+        <div>
+        <label for="select-status" class="block mb-1 font-medium text-black">Status</label>
+        <select
+            id="select-status"
+            formControlName="status"
+            class="bg-card w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            aria-label="Estado del usuario"
+        >
+            <option [ngValue]="1">Activo</option>
+            <option [ngValue]="0">Inactivo</option>
+        </select>
+        </div>
+
+
+        <!-- ====== BOTONES ACCIÓN ====== -->
+        <div class="pt-4 border-t border-gray-200 flex justify-end space-x-3">
+            <button
+            type="button"
+            (click)="cerrarModal()"
+            class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300"
+            >
+            Cancelar
+            </button>
+            <button
+            type="submit"
+            [disabled]="formulario.invalid"
+            class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50"
+            >
+            {{ modoEdicion ? 'Actualizar' : 'Registrar' }}
+            </button>
+        </div>
+        </form>
+    </div>
+    </div>
+
+
+    <!-- TABLA DE EMPLEADOS -->
+    <div class="overflow-x-auto rounded-xl">
+        <table class="min-w-full bg-card shadow-lg text-sm">
+        <thead class="bg-tabla text-text uppercase bg-opacity-25">
+            <tr>
+            <th class="px-6 py-3 text-left">ID</th>
+            <th class="px-6 py-3 text-left">Nombre</th>
+            <th class="px-6 py-3 text-left">Apellidos</th>
+            <th class="px-6 py-3 text-left">DNI</th>
+            <th class="px-6 py-3 text-left">Username</th>
+            <th class="px-6 py-3 text-left">Rol</th>
+            <th class="px-6 py-3 text-left">Estado</th>
+            <th class="px-6 py-3 text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 divide-opacity-5">
+            <tr *ngFor="let emp of empleadosFiltrados" class="hover:bg-nocturne-purple hover:bg-opacity-60">
+            <td class="px-6 py-3">{{ emp.id }}</td>
+            <td class="px-6 py-3">{{ emp.nombre }}</td>
+            <td class="px-6 py-3">{{ emp.apellidos }}</td>
+            <td class="px-6 py-3">{{ emp.dni }}</td>
+            <td class="px-6 py-3">{{ emp.username }}</td>
+            <td class="px-6 py-3">{{ emp.rol }}</td>
+            <td class="px-6 py-3">
+                <span
+                [ngClass]="emp.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                class="text-xs font-semibold px-2.5 py-0.5 rounded-full"
+                >
+                {{ emp.status ? 'activo' : 'inactivo' }}
+                </span>
+            </td>
+            <td class="px-6 py-3 text-center">
+            <!-- Botón Editar -->
+            <button
+            (click)="abrirModal(false, emp)"
+            class="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+            aria-label="Editar empleado"
+            title="Editar empleado"
+            >
+            <i class="fas fa-edit fa-lg" aria-hidden="true"></i>
+            </button>
+            <!-- Botón Eliminar -->
+            <button
+            *ngIf="emp.status == 1"
+            (click)="eliminar(emp.id!)"
+            class="bg-red-500 text-white px-3 py-1 rounded"
+            aria-label="Eliminar empleado"
+            title="Eliminar empleado"
+            >
+            <i class="fa-solid fa-trash fa-lg" aria-hidden="true"></i>
+            </button>
+            </td>
+            </tr>
+            <tr *ngIf="empleadosFiltrados.length === 0">
+            <td colspan="8" class="text-center px-4 py-4">No hay empleados</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+    </div>

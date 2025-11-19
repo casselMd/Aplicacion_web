@@ -1,0 +1,122 @@
+    <div class="bg-general-100 overflow-y-hidden p-6 rounded-lg ">
+    
+        <!-- Encabezado -->
+    <div class="grid grid-cols-2 mb-6">
+        <h1 class="text-2xl font-bold mb-4">Registrar Inventario</h1>
+        <div class="place-items-center">
+        <nav class="bg-mountain-950 p-4 rounded shadow-md">
+            <ul class="flex space-x-4">
+            <li>
+                <a routerLink="/inventario/registrar" class="inline-flex items-center py-2 px-3 border-b-2 border-indigo-400 text-indigo-400">
+                <i class="fa-solid fa-plus"></i>
+                <div class="ml-2">Registrar</div>
+                </a>
+            </li>
+            <li>
+                <a routerLink="/inventario/listar" class="inline-flex items-center py-2 px-3 border-b-2 border-transparent hover:border-indigo-400 hover:text-indigo-400">
+                <i class="fa-solid fa-list"></i>
+                <div class="ml-2">Listar</div>
+                </a>
+            </li>
+            </ul>
+        </nav>
+        </div>
+    </div>
+    <form [formGroup]="inventarioForm" class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+
+
+        <!-- Producto -->
+    <div class="">
+    <label class="block text-sm font-medium text-text mb-1">Producto <span class="text-red-600">*</span></label>
+    
+    <!-- Contenedor para posicionamiento relativo -->
+    <div class="relative w-full" matAutocompleteOrigin #origin="matAutocompleteOrigin">
+        <input
+        type="text"
+        matInput
+        [formControl]="controlProducto"
+        [matAutocomplete]="auto"
+        [matAutocompleteConnectedTo]="origin"
+        [matAutocompleteDisabled]="productos.length === 0"
+        placeholder="Buscar producto"
+        class="bg-card w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm 
+                focus:outline-none focus:ring-2 focus:ring-indigo-500 
+                focus:border-indigo-500 transition duration-150 ease-in-out"
+        />
+    </div>
+
+    <!-- Autocompletado -->
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
+        <mat-option
+        *ngFor="let option of productosFiltrados$ | async"
+        [value]="option"
+        class="!bg-gray-100 !text-gray-800 hover:!bg-gray-200"
+        >
+        {{ option.nombre }}
+        </mat-option>
+    </mat-autocomplete>
+    </div>
+
+
+    <!-- Precio (referencial, solo lectura) -->
+        <div>
+        <label for="precio" class="block font-medium mb-1">Precio (S/)</label>
+        <input
+            id="precio"
+            type="number"
+            [attr.aria-label]="'Precio referencial del producto'"
+            class="w-full border border-gray-300 rounded px-3 py-2 bg-card"
+            [value]="productoSeleccionado?.precio ??0"
+            readonly
+        />
+        </div>
+
+        <!-- Cantidad -->
+        <div>
+        <label class=" block font-medium mb-1">Cantidad <span class="text-red-600">*</span></label>
+        <input 
+        type="number" 
+        formControlName="stock" 
+        min="1" 
+        class="w-full bg-card border border-gray-300 rounded px-3 py-2" 
+        placeholder="Cantidad" />
+        </div>
+
+        <!-- Tipo Movimiento -->
+        <div>
+        <label for="tipoMovimiento" class="block font-medium mb-1">
+            Tipo Movimiento <span class="text-red-600">*</span>
+        </label>
+        <select
+            id="tipoMovimiento"
+            name="tipoMovimiento"
+            formControlName="tipo_movimiento_id"
+            [attr.aria-label]="'Seleccionar tipo de movimiento'"
+            class="bg-card w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            required
+        >
+            <option value="" disabled selected>— Selecciona un tipo —</option>
+            <option
+            *ngFor="let tipo of tiposMovimiento"
+            [value]="tipo.id"
+            class="!bg-gray-100 !text-gray-800 hover:!bg-gray-200"
+            >
+            {{ tipo.nombre }}
+            </option>
+        </select>
+        </div>
+        
+        <!-- Observaciones -->
+        <div class="md:col-span-4">
+        <label class="block font-medium mb-1">Observaciones</label>
+        <textarea formControlName="observaciones" rows="2" class="bg-card w-full border border-gray-300 rounded px-3 py-2" placeholder="Observaciones (opcional)"></textarea>
+        </div>
+    </form>
+
+    <!-- Botón -->
+    <div class="text-right">
+        <button (click)="registrarInventario()" class="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700">
+        Registrar
+        </button>
+    </div>
+    </div>

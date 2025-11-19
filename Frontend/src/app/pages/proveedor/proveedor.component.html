@@ -1,0 +1,195 @@
+    <div class="bg-general-100 overflow-y-hidden p-6 rounded-lg shadow-lg">
+    <div class="flex justify-between mb-4">
+        <h1 class="text-2xl font-bold">Gestión de Proveedores</h1>
+        <button type="button" class="bg-background text-text bg-opacity-70 font-semibold px-2 rounded shadow hover:opacity-90 cursor-default">
+        {{ totalProveedores }} proveedores
+        </button>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-4 mb-6">
+        <button class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700" (click)="abrirModal(true)">
+        <i class="fa fa-plus mr-2"></i> Agregar Proveedor
+        </button>
+
+        <input type="text" placeholder="🔍 Buscar proveedor..." [(ngModel)]="filtros.termino" (ngModelChange)="aplicarFiltros()" class="bg-card flex-1 min-w-[200px] border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+
+        <select
+        [(ngModel)]="filtros.estado"
+        (ngModelChange)="aplicarFiltros()"
+        class="bg-card border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        title="Filtrar por estado"
+        aria-label="Filtro por estado"
+        >
+        <option [ngValue]="null">— Todos los estados —</option>
+        <option [ngValue]="1">Activo</option>
+        <option [ngValue]="0">Inactivo</option>
+        </select>
+    </div>
+
+    <!-- Modal -->
+    <div *ngIf="modalOpen" class="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-card rounded-lg shadow-lg w-full max-w-xl p-6">
+        <h2 class="text-xl font-semibold mb-4 text-text">
+            {{ modoEdicion ? 'Editar Proveedor' : 'Registrar Proveedor' }}
+        </h2>
+        <form [formGroup]="formulario" (ngSubmit)="guardar()" class="space-y-4">
+            <input formControlName="id" type="hidden" />
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="block mb-1 font-medium text-text">Nombre</label>
+                <input
+                formControlName="nombre"
+                type="text"
+                class="bg-card w-full border rounded px-3 py-2"
+                title="Ingrese el nombre del proveedor"
+                aria-label="Nombre del proveedor"
+                />
+            </div>
+
+            <div>
+                <label class="block mb-1 font-medium text-text">RUC</label>
+                <input
+                formControlName="ruc"
+                type="text"
+                class="bg-card w-full border rounded px-3 py-2"
+                title="Ingrese el número de RUC"
+                aria-label="RUC del proveedor"
+                />
+            </div>
+
+            <div>
+                <label class="block mb-1 font-medium text-text">Dirección</label>
+                <input
+                formControlName="direccion"
+                type="text"
+                class="bg-card w-full border rounded px-3 py-2"
+                title="Ingrese la dirección del proveedor"
+                aria-label="Dirección del proveedor"
+                />
+            </div>
+
+            <div>
+                <label class="block mb-1 font-medium text-text">Teléfono</label>
+                <input
+                formControlName="telefono"
+                type="text"
+                class="bg-card w-full border rounded px-3 py-2"
+                title="Ingrese el número de teléfono"
+                aria-label="Teléfono del proveedor"
+                />
+            </div>
+
+            <div>
+                <label class="block mb-1 font-medium text-text">Tipo</label>
+                <select
+                formControlName="tipo"
+                class="bg-card w-full border rounded px-3 py-2"
+                title="Seleccione el tipo de proveedor"
+                aria-label="Tipo de proveedor"
+                >
+                <option value="FORMAL">Formal</option>
+                <option value="INFORMAL">Informal</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block mb-1 font-medium text-text">Estado</label>
+                <select
+                formControlName="estado"
+                class="bg-card w-full border rounded px-3 py-2"
+                title="Seleccione el estado del proveedor"
+                aria-label="Estado del proveedor"
+                >
+                <option [ngValue]="1">Activo</option>
+                <option [ngValue]="0">Inactivo</option>
+                </select>
+            </div>
+            </div>
+
+            <div>
+            <label class="block mb-1 font-medium text-text">Observaciones</label>
+            <textarea
+                formControlName="observaciones"
+                rows="3"
+                class="bg-card w-full border rounded px-3 py-2"
+                title="Ingrese observaciones adicionales"
+                aria-label="Observaciones del proveedor"
+            ></textarea>
+            </div>
+
+            <div class="flex justify-end space-x-2 mt-4">
+            <button
+                type="button"
+                (click)="cerrarModal()"
+                class="bg-background text-text px-4 py-2 rounded hover:bg-nocturne-purple"
+                title="Cancelar registro"
+            >
+                Cancelar
+            </button>
+
+            <button
+                type="submit"
+                [disabled]="formulario.invalid"
+                class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+                [title]="modoEdicion ? 'Actualizar proveedor' : 'Registrar proveedor'"
+            >
+                {{ modoEdicion ? 'Actualizar' : 'Registrar' }}
+            </button>
+            </div>
+
+        </form>
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="overflow-x-auto rounded-xl">
+        <table class="min-w-full bg-card shadow-lg text-sm">
+        <thead class="bg-tabla text-text uppercase bg-opacity-25">
+            <tr>
+            <th class="px-6 py-3 text-left">ID</th>
+            <th class="px-6 py-3 text-left">Razón social</th>
+            <th class="px-6 py-3 text-left">RUC</th>
+            <th class="px-6 py-3 text-left">Teléfono</th>
+            <th class="px-6 py-3 text-left">Tipo</th>
+            <th class="px-6 py-3 text-left">Estado</th>
+            <th class="px-6 py-3 text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 divide-opacity-5">
+            <tr *ngFor="let proveedor of proveedoresFiltrados" class="hover:bg-nocturne-purple hover:bg-opacity-60">
+            <td class="px-6 py-3">{{ proveedor.id }}</td>
+            <td class="px-6 py-3">{{ proveedor.nombre }}</td>
+            <td class="px-6 py-3">{{ proveedor.ruc }}</td>
+            <td class="px-6 py-3">{{ proveedor.telefono }}</td>
+            <td class="px-6 py-3">{{ proveedor.tipo }}</td>
+            <td class="px-6 py-3">
+                <span [ngClass]="proveedor.estado ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'" class="text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                {{ proveedor.estado ? 'activo' : 'inactivo' }}
+                </span>
+            </td>
+            <td class="px-6 py-3 text-center">
+            <button
+            (click)="abrirModal(false, proveedor)"
+            class="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+            title="Editar proveedor"
+            aria-label="Editar proveedor"
+            >
+            <i class="fas fa-edit fa-lg"></i>
+            </button>
+
+            <button
+            *ngIf="proveedor.estado == 1"
+            (click)="eliminar(proveedor.id)"
+            class="bg-red-500 text-white px-3 py-1 rounded"
+            title="Eliminar proveedor"
+            aria-label="Eliminar proveedor"
+            >
+            <i class="fa-solid fa-trash fa-lg"></i>
+            </button>
+            </td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+    </div>

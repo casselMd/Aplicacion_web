@@ -4,6 +4,7 @@ require_once ('Libraries/vendor/autoload.php');
 use \Firebase\JWT\JWT;
 use \Firebase\JWT\Key;
 use \Firebase\JWT\ExpiredException;
+require_once 'Authjwt.php';
 
 class Authjwt extends Controller {
 
@@ -21,7 +22,7 @@ class Authjwt extends Controller {
             $method = $_SERVER['REQUEST_METHOD'];
             $response = [];
             $code = 200;
-            if($method != 'POST'){
+            if($method == 'POST'){
                 $post = json_decode(file_get_contents('php://input'), true);
 
                 #validacion uwu
@@ -37,7 +38,7 @@ class Authjwt extends Controller {
                 $this->model->set("nombre",          ucwords( strClean($post["nombre"])));
                 $this->model->set("apellido",        ucwords( strClean($post["apellido"])));
                 $this->model->set("username",        strClean($post["username"]));
-                $this->model->set("password",        hash($post["password"], PASSWORD_DEFAULT));
+                $this->model->set("password",        hash('SHA256', $post["password"]));
                 $request = $this->model->setCliente();
 
                 #resive y verifica el tiempo de respuesta del modelo
@@ -54,7 +55,7 @@ class Authjwt extends Controller {
             die();
             
         }catch(Exception $e){
-            $response = ["status" => false, "msg" => nl2br("ERROR" . $e->getMessage())];
+            $response = ["status" => false, "msg" => nl2br("ERROR:::" . $e->getMessage())];
             $code = $e->getCode() == 0 ?  400 :$e->getCode();
             jsonResponse($response, $code);
             die();

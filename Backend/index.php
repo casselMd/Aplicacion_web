@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 $allowed_origins = ['http://localhost:4200','https://precious-peony-bc991c.netlify.app']; // o https://tudominio.com en producción
 if (isset($_SERVER['HTTP_ORIGIN']) && in_array($_SERVER['HTTP_ORIGIN'], $allowed_origins)) {
     header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
@@ -32,7 +35,7 @@ if(!empty($arrUrl[2])) {
     if($arrUrl[2] != "") {
         for ($i=2; $i < count($arrUrl); $i++) { 
             $params .= $arrUrl[$i] . ",";
-        }
+        } 
         $params = trim($params, ",");
     }
 }

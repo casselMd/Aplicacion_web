@@ -1,0 +1,209 @@
+    <div class=" p-6">
+        <!-- Encabezado de Navegación -->
+    <div class="grid grid-cols-2 mb-6">
+        <h1 class="text-2xl font-bold text-text">Listado de Ventas</h1>
+        <div class="place-items-center">
+        <nav class="bg-mountain-950 p-4 rounded shadow-md">
+            <ul class="flex space-x-4">
+            <li>
+                <a routerLink="/venta/registrar" class="inline-flex items-center py-2 px-3 border-b-2 border-transparent hover:border-indigo-400 hover:text-indigo-400  ">
+                <i class="fa-solid fa-plus"></i>
+                <div class="ml-2">Registrar</div>
+                </a>
+            </li>
+            <li>
+                <a routerLink="/venta/listar" class="inline-flex items-center py-2 px-3 border-b-2   border-indigo-400 text-indigo-400">
+                <i class="fa-solid fa-list"></i>
+                <div class="ml-2">Listar</div>
+                </a>
+            </li>
+            </ul>
+        </nav>
+        </div>
+    </div>
+
+    <!-- Encabezado de Navegación -->
+    <div class="flex items-center justify-between mb-4">
+        <div class="text-right">
+        <input
+            type="text"
+            placeholder="Buscar por ID o documento..."
+            [(ngModel)]="filtro"
+            (input)="filtrarVentas()"
+            class="bg-card border rounded-md px-4 py-2"
+        />
+        </div>
+    </div>
+
+    <!-- Tabla de Ventas -->
+    <div class="overflow-x-auto rounded-xl">
+        <table class="min-w-full bg-card rounded shadow">
+        <thead class="bg-tabla text-text uppercase bg-opacity-25">
+            <tr>
+            <th class="px-4 py-2">ID</th>
+            <th class="px-1 py-2">Fecha</th>
+            <th class="px-4 py-2">DNI/RUC</th>
+            <th class="px-4 py-2">Razon Social</th>
+            <th class="px-4 py-2">DNI Empleado</th>
+            <th class="px-4 py-2">Empleado</th>
+            <th class="px-4 py-2">Total</th>
+            <th class="px-2 py-2">Entrega</th>
+            <th class="px-16 py-2 text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr
+            *ngFor="let venta of ventasFiltradas"
+            class="hover:bg-nocturne-purple hover:bg-opacity-60"
+            >
+            <td class="px-4 py-2">{{ venta.id }}</td>
+            <td class="px-1 py-2 text-center">{{ venta.fecha  }}</td>
+            <td class="px-4 py-2">{{ venta.cliente.id }}</td>
+            <td class="px-4 py-2">{{ venta.cliente.nombre }}</td>
+            <td class="px-4 py-2">{{ venta.empleado.dni }}</td>
+            <td class="px-4 py-2">{{ venta.empleado.nombre }}</td>
+            <td class="px-2 py-2">S/ {{ venta.total | number: '1.2-2' }}</td>
+            <td class="px-2 py-2 text-center">
+                <span
+                    [ngClass]="venta.es_delivery ? 'bg-sky-200 text-sky-800' : 'bg-yellow-200 text-yellow-800'"
+                    class="px-3 py-1 rounded-full text-xs font-semibold"
+                >
+                    {{ venta.es_delivery ? 'Delivery' : 'Local' }}
+                </span>
+            </td>
+            <td class="px-1 py-2 space-x-1 text-center">
+                <button
+                title="Ver"
+                (click)="verVenta(venta.id)"
+                class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                >
+                <i class="fa-solid fa-eye fa-lg"></i>
+                </button>
+                
+                <!-- Dentro del <td> de acciones -->
+                <button
+                    *ngIf="venta.status === 2"
+                    title="Editar"
+                    (click)="editarVenta(venta.id)"
+                    class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
+                    >
+                    <i class="fas fa-edit fa-lg"></i>
+                </button>
+
+                <button *ngIf="venta.status === 2 "
+                    title="Confirmar"
+                    (click)="confirmarVenta(venta.id)"
+                    class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
+                >
+                    <i class="fa-solid fa-check fa-lg"></i>
+                </button>
+                <button title="Descargar PDF"
+                class="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 "
+                (click)="generarPDF(venta.id)">
+                <i class="fa-regular fa-file-pdf fa-xl"></i>
+                </button>
+
+                <button *ngIf="venta.status === 2   "
+                title="Cancelar"
+                (click)="cancelarVenta(venta.id)"
+                class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
+                >
+                <i class="fa-solid fa-trash fa-lg"></i>
+                </button>
+
+            </td>
+            </tr>
+            <tr *ngIf="ventasFiltradas.length === 0">
+            <td colspan="7" class="text-center py-4 text-gray-500">
+                No se encontraron ventas con ese criterio.
+            </td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+
+    <!-- Modal Detalle de Venta -->
+    <div
+    *ngIf="ventaSeleccionada"
+    id="modalVenta"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+    <div
+        class="bg-card text-white rounded-lg shadow-lg p-8 w-full max-w-3xl space-y-6"
+        id="contenidoFactura"
+    >
+        <!-- Cabecera -->
+        <div class="flex justify-between items-start border-b border-white/20 pb-4">
+        <div>
+            <h1 class="text-2xl font-bold">Factura de Venta</h1>
+            <p class="text-sm text-white/80">ID: {{ ventaSeleccionada.id }}</p>
+        </div>
+        <button
+            class="text-white hover:text-red-400 text-2xl"
+            (click)="cerrarModal()"
+        >
+            ✕
+        </button>
+        </div>
+
+        <!-- Datos generales -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+        <div><strong>Fecha:</strong><br />{{ ventaSeleccionada.fecha }}</div>
+        <div><strong>Total:</strong><br />S/ {{ ventaSeleccionada.total | number: '1.2-2' }}</div>
+        <div><strong>Método de Pago:</strong><br />{{ ventaSeleccionada.metodo_pago.nombre }}</div>
+        <hr class="col-span-2 md:col-span-3 opacity-20" >
+        <div><strong>Empleado : </strong>{{ ventaSeleccionada.empleado.nombre }}</div>
+        <div><strong>DNI/RUC : </strong> {{ ventaSeleccionada.empleado.dni }}</div>
+        <hr class="col-span-2 md:col-span-3 opacity-20">
+        <div><strong>Razon Social : </strong>{{ ventaSeleccionada.cliente.nombre }}</div>
+        <div><strong>DNI/RUC  : </strong>{{ ventaSeleccionada.cliente.id }}</div>
+        </div>
+
+        <!-- Tabla de productos -->
+        <div>
+        <h2 class="text-lg font-semibold mt-6 mb-2">Productos vendidos</h2>
+        <table class="w-full text-sm border border-white/20">
+            <thead class="bg-white/10 text-white uppercase">
+            <tr>
+                <th class="text-left px-3 py-2 border-b border-white/20">Producto</th>
+                <th class="text-right px-3 py-2 border-b border-white/20">Precio Unitario</th>
+                <th class="text-right px-3 py-2 border-b border-white/20">Cantidad</th>
+                <th class="text-right px-3 py-2 border-b border-white/20">Subtotal</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr
+                *ngFor="let d of ventaSeleccionada.detalles"
+                class="hover:bg-white/10"
+            >
+                <td class="px-3 py-2 border-b border-white/10">{{ d.producto.nombre }}</td>
+                <td class="px-3 py-2 text-right border-b border-white/10">S/ {{ d.precio_unitario | number: '1.2-2' }}</td>
+                <td class="px-3 py-2 text-right border-b border-white/10">{{ d.cantidad }}</td>
+                <td class="px-3 py-2 text-right border-b border-white/10">S/ {{ d.subtotal | number: '1.2-2' }}</td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>
+
+
+
+
+    <!-- Modal de edición -->
+    <div *ngIf="ventaEnEditar" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
+    <div class="bg-card rounded-lg shadow-lg p-6 w-full max-w-3xl max-h-[80vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4">
+        <h2 class="text-xl font-semibold text-text">Editar Venta ID {{ ventaEnEditar.id }}</h2>
+        <button (click)="cerrarEdicion()">✕</button>
+        </div>
+        <app-formulario-venta
+        [ventaEditar]="ventaEnEditar"
+        (guardado)="actualizarVenta($event)"
+        ></app-formulario-venta>
+    </div>
+    </div>
+    </div>
+
+
+    <app-loader *ngIf="generandoPDF" [texto]="'Generando PDF...'"></app-loader>

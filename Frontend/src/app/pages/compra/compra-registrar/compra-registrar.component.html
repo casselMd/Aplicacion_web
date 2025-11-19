@@ -1,0 +1,256 @@
+    <div class="container mx-auto p-4">
+    <!-- Encabezado de Navegación -->
+    <div class="grid grid-cols-2 mb-6">
+        <h1 class="text-2xl font-bold titulo-gest-ventas">Gestión de Compras</h1>
+        <div class="place-items-center">
+        <nav class="bg-mountain-950 p-4 rounded shadow-md">
+            <ul class="flex space-x-4">
+            <li>
+                <a routerLink="/compra/registrar" class="inline-flex items-center py-2 px-3 border-b-2 border-indigo-500 text-indigo-500 hover:border-indigo-400 hover:text-indigo-400">
+                <i class="fa-solid fa-plus"></i>
+                <div class="ml-2">Registrar</div>
+                </a>
+            </li>
+            <li>
+                <a routerLink="/compra/listar" class="inline-flex items-center py-2 px-3 border-b-2 border-transparent text-white hover:border-indigo-400 hover:text-indigo-400">
+                <i class="fa-solid fa-list"></i>
+                <div class="ml-2">Listar</div>
+                </a>
+            </li>
+            </ul>
+        </nav>
+        </div>
+    </div>
+
+
+    <div class="grid grid-cols-2 gap-4">
+        <!-- Formulario General de Compra -->
+        <form [formGroup]="ventaForm" class="mb-1">
+        <div class="bg-mountain-50 p-4 rounded shadow-md grid grid-cols-2 gap-4 ">
+            <div class="col-span-2 grid grid-cols-2 items-center">
+            <div>
+                <div class="text-2xl font-bold">Datos de la Compra</div>
+            </div>
+            <div class="flex justify-end">
+                <button
+                type="button"
+                (click)="registrarVenta()"
+                class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center gap-x-1"
+                >
+                <i class="fa-solid fa-plus"></i> Registrar Compra
+                </button>
+            </div>
+            </div>
+            <!-- Proveedor -->
+            <div>
+            <label for="proveedorSelect" class="block text-sm font-medium text-text mb-2">Proveedor:</label>
+            <select
+                id="proveedorSelect"
+                formControlName="proveedor_id"
+                class="bg-card w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            >
+                <option value="">Seleccione un proveedor</option>
+                <option *ngFor="let p of proveedores" [value]="p.id">
+                {{ p.id }} - {{ p.nombre }}
+                </option>
+            </select>
+            </div>
+            <!-- Método de Pago -->
+            <div>
+            <label for="metodoPagoSelect" class="block text-sm font-medium text-text mb-2">Método de Pago:</label>
+            <select
+                id="metodoPagoSelect"
+                formControlName="metodo_pago_id"
+                class="bg-card w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            >
+                <option value="">Seleccione un método</option>
+                <option *ngFor="let m of metodosPago" [value]="m.id">
+                {{ m.metodo_pago }}
+                </option>
+            </select>
+            </div>
+            <!-- Tipo Documento -->
+            <div>
+            <label for="tipoDoc" class="block text-sm font-medium text-text mb-2">Tipo Documento:</label>
+            <select
+                id="tipoDoc"
+                formControlName="tipo_documento"
+                class="bg-card w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            >
+                <option value="ninguno">Ninguno</option>
+                <option value="boleta">Boleta</option>
+                <option value="factura">Factura</option>
+            </select>
+            </div>
+            <!-- Número Documento -->
+            <div>
+            <label for="numDoc" class="block text-sm font-medium text-text mb-2">N° Documento:</label>
+            <input
+                id="numDoc"
+                formControlName="numero_documento"
+                type="text"
+                class="bg-card w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            />
+            </div>
+            <!-- Fecha  -->
+            <div>
+            <label for="fechaDoc" class="block text-sm font-medium text-text mb-2">Fecha :</label>
+            <input
+                id="fechaDoc"
+                formControlName="fecha_documento"
+                type="date"
+                class="bg-card w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            />
+            </div>
+            <!-- Observaciones -->
+            <div class="col-span-2">
+            <label for="obs" class="block text-sm font-medium text-text mb-2">Observaciones:</label>
+            <textarea
+                id="obs"
+                formControlName="observaciones"
+                rows="2"
+                class="bg-card w-full px-3 py-2 border rounded resize-none focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            ></textarea>
+            </div>
+        </div>
+        </form>
+
+        <!-- Registro de Producto (Detalle de Compra) -->
+        <form (ngSubmit)="addProduct()" #detalleForm="ngForm" class="space-y-6 mb-1">
+        <div class="bg-mountain-50 p-8 rounded shadow-md">
+            <div class="grid grid-cols-4 mb-4">
+            <div class="col-span-3 text-2xl font-bold text-gray-800">Registro de Producto</div>
+            <div class="col-span-1">
+                <button
+                type="submit"
+                [disabled]="detalleForm.invalid"
+                class="w-full py-2 px-4 bg-indigo-600 text-white font-medium rounded shadow hover:bg-indigo-700"
+                >
+                <i class="fa-solid fa-plus"></i> Agregar
+                </button>
+            </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Producto -->
+            <div class="md:col-span-3">
+                <label class="block text-sm font-medium text-text mb-1">Producto:</label>
+                <!-- Contenedor con posicionamiento relativo para el dropdown -->
+            <div class="relative w-full" matAutocompleteOrigin #origin="matAutocompleteOrigin">
+                <input
+                    type="text"
+                    matInput
+                    [formControl]="controlProducto"
+                    [matAutocomplete]="auto"
+                    [matAutocompleteConnectedTo]="origin"
+                    [matAutocompleteDisabled]="productos.length === 0"
+                    placeholder="Buscar producto"
+                    class="bg-card w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+                    
+                />
+                </div>
+
+                <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption [displayWith]="displayFn">
+                <mat-option
+                    *ngFor="let option of productosFiltrados$ | async"
+                    [value]="option"
+                    class="!bg-gray-100 !text-gray-800 hover:!bg-gray-200"
+                >
+                    {{ option.nombre }}
+                </mat-option>
+                </mat-autocomplete>
+
+            </div>
+            <!-- Precio -->
+            <div>
+            <label for="precioInput" class="block text-sm font-medium text-text mb-1">
+                Precio U.
+            </label>
+            <input
+                id="precioInput"
+                type="number"
+                [(ngModel)]="product.precio"
+                name="precio_unitario"
+                aria-label="Precio unitario del producto"
+                min="0"
+                step="0.01"
+                class="bg-card mt-1 block w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            />
+            </div>
+
+            <!-- Cantidad -->
+            <div>
+            <label for="cantidadInput" class="block text-sm font-medium text-text mb-1">
+                Cantidad
+            </label>
+            <input
+                id="cantidadInput"
+                type="number"
+                [(ngModel)]="product.stock"
+                name="cantidad"
+                required
+                min="1"
+                aria-label="Cantidad del producto"
+                class="bg-card mt-1 block w-full border rounded p-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            />
+            </div>
+
+            <!-- Subtotal -->
+            <div>
+            <label for="subtotalInput" class="block text-sm font-medium text-text mb-1">
+                Subtotal
+            </label>
+            <input
+                id="subtotalInput"
+                [value]="(product.precio || 0) * (product.stock || 0) | number: '1.2-2'"
+                disabled
+                aria-label="Subtotal del producto"
+                class="bg-card mt-1 block w-full border rounded p-2 text-gray-500"
+            />
+            </div>
+            </div>
+        </div>
+        </form>
+    </div>
+
+    <!-- Tabla de Detalles Agregados -->
+    <div class=" rounded shadow-md " *ngIf="products.length !== 0">
+        <h2 class="text-xl font-semibold mb-4 text-gray-800">Productos Registrados</h2>
+        <div class="overflow-x-auto rounded-xl">
+        <table class="min-w-full bg-card  rounded shadow-md">
+            <thead class="bg-tabla text-text uppercase text-sm">
+            <tr>
+                <th class="px-6 py-2  text-center">ID</th>
+                <th class="px-6 py-2  text-center">Producto</th>
+                <th class="px-6 py-2  text-center">Cantidad</th>
+                <th class="px-6 py-2  text-center">Precio U.</th>
+                <th class="px-6 py-2  text-center">Subtotal</th>
+                <th class="px-6 py-2  text-center">Acciones</th>
+            </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 divide-opacity-5">
+            <tr *ngFor="let d of products; let i = index" class="hover:bg-nocturne-purple hover:bg-opacity-60">
+                <td class="px-4 py-2  text-center">{{ d.id_producto }}</td>
+                <td class="px-4 py-2  text-center">{{d.nombre}} </td>
+                <td class="px-4 py-2  text-center">{{ d.cantidad }}</td>
+                <td class="px-4 py-2  text-center">{{ d.precio_unitario | number:'1.2-2' }}</td>
+                <td class="px-4 py-2  text-center">{{ (d.precio_unitario * d.cantidad) | number:'1.2-2' }}</td>
+                <td class="px-4 py-2  text-center">
+                <button
+                class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                (click)="removeDetalle(i)"
+                title="Eliminar producto"
+                aria-label="Eliminar producto"
+                >
+                <i class="fa fa-trash" aria-hidden="true"></i>
+                </button>
+                </td>
+            </tr>
+            <tr *ngIf="products.length === 0">
+                <td colspan="6" class="text-center px-4 py-4">No hay productos agregados</td>
+            </tr>
+            </tbody>
+        </table>
+        </div>
+    </div>
+    </div>

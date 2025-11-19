@@ -4,22 +4,33 @@
 
         <!-- Cliente -->
         <div>
-            <label class="block font-semibold mb-1">Cliente</label>
-            <select formControlName="cliente_id" class="w-full bg-card border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out">
+        <label for="clienteSelect" class="block font-semibold mb-1">Cliente</label>
+        <select
+            id="clienteSelect"
+            formControlName="cliente_id"
+            title="Seleccionar cliente"
+            aria-label="Seleccionar cliente"
+            class="w-full bg-card border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+        >
             <option [value]="null">-- Seleccionar --</option>
             <option *ngFor="let c of clientes" [value]="c.id">{{ c.cliente }}</option>
-            </select>
+        </select>
         </div>
 
         <!-- Método de Pago -->
         <div>
-            <label class="block font-semibold mb-1">Método de Pago</label>
-            <select formControlName="metodo_pago_id" class="w-full bg-card border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out">
+        <label for="metodoPagoSelect" class="block font-semibold mb-1">Método de Pago</label>
+        <select
+            id="metodoPagoSelect"
+            formControlName="metodo_pago_id"
+            title="Seleccionar método de pago"
+            aria-label="Seleccionar método de pago"
+            class="w-full bg-card border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+        >
             <option [value]="null">-- Seleccionar --</option>
             <option *ngFor="let mp of metodosPago" [value]="mp.id">{{ mp.metodo_pago }}</option>
-            </select>
+        </select>
         </div>
-
 
     <hr class="my-6 opacity-10" />
 
@@ -50,17 +61,32 @@
             </mat-option>
         </mat-autocomplete>
         
-
         <!-- Precio -->
         <div>
-        <label class="block font-semibold mb-1">Precio</label>
-        <input type="number" [(ngModel)]="producto.precio " class="w-full bg-card border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out" disabled />
+        <label for="precioInput" class="block font-semibold mb-1">Precio</label>
+        <input
+            id="precioInput"
+            type="number"
+            [(ngModel)]="producto.precio"
+            title="Precio del producto"
+            aria-label="Precio del producto"
+            class="w-full bg-card border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+            disabled
+        />
         </div>
 
         <!-- Cantidad -->
         <div>
-        <label class="block font-semibold mb-1">Cantidad</label>
-        <input type="number" [(ngModel)]="producto.cantidad" min="1"  class="w-full bg-card border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out" />
+        <label for="cantidadInput" class="block font-semibold mb-1">Cantidad</label>
+        <input
+            id="cantidadInput"
+            type="number"
+            [(ngModel)]="producto.cantidad"
+            min="1"
+            title="Cantidad del producto"
+            aria-label="Cantidad del producto"
+            class="w-full bg-card border px-3 py-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition duration-150 ease-in-out"
+        />
         </div>
 
         <!-- Botón Agregar -->

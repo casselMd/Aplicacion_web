@@ -463,12 +463,15 @@ class Empleado extends Controller {
             $code = 200;
     
             if ($method == "GET") {
-                if(empty($token)) new Exception("Token no recibido");
+                if(empty($token)) throw new Exception("Token no recibido");
                 // Validamos el token con una función helper (asumida: validateToken)
                 $result = fnValidateToken($token);
                 
-                
-                if ($result["status"]) {
+            if (!is_array($result) || !isset($result["status"])) {
+                throw new Exception("Error al validar el token.");
+            }
+
+                if ($result["status"] == true) {
                     $response = [
                         "status" => true,
                         "msg"    => "Token válido(limitado).",

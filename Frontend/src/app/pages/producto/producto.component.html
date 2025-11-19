@@ -1,0 +1,279 @@
+    <div class="bg-general-100 overflow-y-hidden p-6 rounded-lg shadow-lg">
+    <div class="flex justify-between mb-4">
+        <h1 class="text-2xl font-bold mb-4">Gestión de Productos</h1>
+        <button
+        type="button"
+        class="bg-background text-text bg-opacity-70 font-semibold px-2 rounded shadow hover:opacity-90 cursor-default"
+        >
+        {{ totalProductos }} productos
+        </button>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-4 mb-6">
+        <button *ngIf="rol === 'admin'"
+        class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+        (click)="abrirModal(true)"
+        >
+        <i class="fa fa-plus mr-2"></i> Agregar Producto
+        </button>
+
+        <input
+        type="text"
+        placeholder="🔍 Buscar producto..."
+        [(ngModel)]="filtros.termino"
+        (ngModelChange)="aplicarFiltros()"
+        class="bg-card flex-1 min-w-[200px] border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        <!-- Filtro por estado -->
+        <select
+        [(ngModel)]="filtros.estado"
+        (ngModelChange)="aplicarFiltros()"
+        class="bg-card border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        title="Filtrar por estado"
+        aria-label="Filtrar por estado"
+        >
+        <option [ngValue]="null">— Todos los estados —</option>
+        <option [ngValue]="1">Activo</option>
+        <option [ngValue]="0">Inactivo</option>
+        </select>
+
+        <!-- Filtro por existencia -->
+        <select
+        [(ngModel)]="filtros.existencia"
+        (ngModelChange)="aplicarFiltros()"
+        class="bg-card border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        title="Filtrar por existencia"
+        aria-label="Filtrar por existencia"
+        >
+        <option [ngValue]="null">— Filtrar por Existencia —</option>
+        <option [ngValue]="1">Productos con stock existente</option>
+        <option [ngValue]="0">Con stock limitado</option>
+        </select>
+
+        <!-- Orden alfabético -->
+        <select
+        [(ngModel)]="filtros.orden"
+        (ngModelChange)="aplicarFiltros()"
+        class="bg-card border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        title="Ordenar por nombre"
+        aria-label="Ordenar por nombre"
+        >
+        <option value="">— Orden —</option>
+        <option value="nombre_asc">Nombre A → Z</option>
+        <option value="nombre_desc">Nombre Z → A</option>
+        </select>
+    </div>
+
+    <!-- MODAL TAILWIND -->
+    <div
+        *ngIf="modalOpen"
+        class="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50 overflow-scroll"
+    >
+        <div class="bg-card rounded-lg shadow-lg w-full max-w-lg p-6">
+        <h2 class="text-xl font-semibold mb-4 text-text">
+            {{ modoEdicion ? 'Editar Producto' : 'Registrar Producto' }}
+        </h2>
+        <form [formGroup]="formulario" (ngSubmit)="guardar()" class="space-y-4">
+        <input formControlName="id" type="hidden" />
+
+        <div>
+            <label for="nombre" class="block mb-1 font-medium text-text">Nombre</label>
+            <input
+            id="nombre"
+            formControlName="nombre"
+            type="text"
+            title="Nombre del producto"
+            aria-label="Nombre del producto"
+            class="bg-card w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+        </div>
+
+        <div>
+            <label for="descripcion" class="block mb-1 font-medium text-text">Descripción</label>
+            <textarea
+            id="descripcion"
+            formControlName="descripcion"
+            rows="3"
+            title="Descripción del producto"
+            aria-label="Descripción del producto"
+            class="bg-card w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            ></textarea>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div>
+            <label for="precio" class="block mb-1 font-medium text-text">Precio</label>
+            <input
+                id="precio"
+                formControlName="precio"
+                type="number"
+                step="0.01"
+                title="Precio del producto"
+                aria-label="Precio del producto"
+                class="bg-card w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            </div>
+
+            <div>
+            <label for="categoria" class="block mb-1 font-medium text-text">Categoría</label>
+            <select
+                id="categoria"
+                formControlName="categoria_id"
+                title="Selecciona una categoría"
+                aria-label="Selecciona una categoría"
+                class="bg-card w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+                <option [ngValue]="null">— Selecciona categoría —</option>
+                <option *ngFor="let cat of categorias" [ngValue]="cat.id">
+                {{ cat.categoria }}
+                </option>
+            </select>
+            </div>
+
+            <div>
+            <label for="existente" class="block mb-1 font-medium text-text">Es Existente</label>
+            <select
+                id="existente"
+                formControlName="es_existente"
+                title="Indica si el producto existe"
+                aria-label="Indica si el producto existe"
+                class="bg-card w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+                <option [ngValue]="0">No</option>
+                <option [ngValue]="1">Sí</option>
+            </select>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div>
+            <label for="unidad" class="block mb-1 font-medium text-text">Unidad de Medida</label>
+            <select
+                id="unidad"
+                formControlName="unidad_medida_id"
+                title="Selecciona unidad de medida"
+                aria-label="Selecciona unidad de medida"
+                class="bg-card w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+                <option [ngValue]="null">— Selecciona unidad —</option>
+                <option *ngFor="let u of unidades" [ngValue]="u.id">
+                {{ u.nombre }}
+                </option>
+            </select>
+            </div>
+
+            <div>
+            <label for="margen" class="block mb-1 font-medium text-text">Margen de Ganancia</label>
+            <input
+                id="margen"
+                formControlName="margen_ganancia"
+                type="number"
+                step="0.01"
+                min="0"
+                max="1.00"
+                title="Margen de ganancia del producto"
+                aria-label="Margen de ganancia del producto"
+                class="bg-card w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            </div>
+
+            <div>
+            <label for="status" class="block mb-1 font-medium text-text">Status</label>
+            <select
+                id="status"
+                formControlName="status"
+                title="Estado del producto"
+                aria-label="Estado del producto"
+                class="bg-card w-full border rounded px-3 py-2"
+            >
+                <option [ngValue]="1">Activo</option>
+                <option [ngValue]="0">Inactivo</option>
+            </select>
+            </div>
+        </div>
+
+        <div class="flex justify-end space-x-2 mt-4">
+            <button
+            type="button"
+            (click)="cerrarModal()"
+            title="Cancelar registro"
+            aria-label="Cancelar registro"
+            class="bg-background text-text px-4 py-2 rounded hover:bg-nocturne-purple"
+            >
+            Cancelar
+            </button>
+            <button
+            type="submit"
+            [disabled]="formulario.invalid"
+            title="Guardar producto"
+            aria-label="Guardar producto"
+            class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+            >
+            {{ modoEdicion ? 'Actualizar' : 'Registrar' }}
+            </button>
+        </div>
+        </form>
+        </div>
+    </div>
+
+    <!-- TABLA DE PRODUCTOS -->
+    <div class="overflow-x-auto rounded-xl">
+        <table class="min-w-full bg-card shadow-lg text-sm">
+        <thead class="bg-tabla text-text uppercase bg-opacity-25">
+            <tr>
+            <th class="px-6 py-3 text-left">ID</th>
+            <th class="px-6 py-3 text-left">Nombre</th>
+            <th class="px-6 py-3 text-left">Precio Promedio</th>
+            <th class="px-6 py-3 text-left">Precio Venta</th>
+            <th class="px-6 py-3 text-left">Stock</th>
+            <th class="px-6 py-3 text-left">Categoría </th>
+            <th class="px-6 py-3 text-left">Unidad </th>
+            <th class="px-6 py-3 text-left">Margen Ganancia </th>
+            <th class="px-6 py-3 text-left">Estado</th>
+            <th *ngIf="rol === 'admin'" class="px-8 py-3 text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 divide-opacity-5">
+            <tr *ngFor="let producto of productosFiltrados" class="hover:bg-nocturne-purple hover:bg-opacity-60">
+            <td class="px-6 py-3">{{ producto.id }}</td>
+            <td class="px-6 py-3">{{ producto.nombre }}</td>
+            <td class="px-6 py-3">{{ producto.precio | number:'1.2-2' }}</td>
+            <td class="px-6 py-3">{{ producto.precio_venta | number:'1.2-2' }}</td>
+            <td class="px-6 py-3">{{ producto.stock }}</td>
+            <td class="px-6 py-3">{{ getNombreCategoria(producto.categoria.id) }}</td>
+            <td class="px-6 py-3"> {{ getNombreUnidad(producto.unidad_medida.id) }}</td>
+            <td class="px-6 py-3 text-center"> {{ producto.margen_ganancia }}</td>
+            <td class="px-4 py-3">
+                <span
+                [ngClass]="producto.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                class="text-xs font-semibold px-2.5 py-0.5 rounded-full"
+                >
+                {{ producto.status ? 'activo' : 'inactivo' }}
+                </span>
+            </td>
+            <td  *ngIf="rol === 'admin'" class="px-1 py-3 text-center">
+            <button
+                (click)="abrirModal(false, producto)"
+                class="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+                title="Editar producto"
+            >
+                <i class="fas fa-edit fa-lg"></i>
+            </button>
+
+            <button
+                *ngIf="producto.status == 1"
+                (click)="eliminar(producto.id)"
+                class="bg-red-500 text-white px-3 py-1 rounded"
+                title="Eliminar producto"
+            >
+                <i class="fa-solid fa-trash fa-lg"></i>
+            </button>
+            </td>
+            </tr>
+            <tr *ngIf="productosFiltrados.length === 0">
+            <td colspan="8" class="text-center px-4 py-4">No hay resultados</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+    </div>

@@ -59,6 +59,7 @@ export class LoginComponent {
             if (payload && payload.data.rol) {
               this.authService.setRol(payload.data.rol);
             }
+            console.log('Login exitoso');
 
             this.router.navigate(['/']);
           } else {

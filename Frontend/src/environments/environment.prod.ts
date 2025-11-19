@@ -5,8 +5,8 @@ export const environment = {
 
     client_secret :"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",
     client_id :"1076254956911-5oijcj6kjl4lpf1q14sc5kvvro17c6oq.apps.googleusercontent.com",
-    project_id : "",
-    auth_uri : "https://Delicias.auth/authjwt/token",
-    token_uri : "https://Delicias.auth/authjwt/validate_token",
-    auth_provider_x509_cert_url : "",
+    project_id : "ardent-fusion-474521-t2",
+    auth_uri : "https://accounts.google.com/o/oauth2/auth",
+    token_uri : "https://oauth2.googleapis.com/token",
+    auth_provider_x509_cert_url : "https://www.googleapis.com/oauth2/v1/certs",
 };

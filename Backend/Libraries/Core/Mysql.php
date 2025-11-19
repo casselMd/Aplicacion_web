@@ -12,13 +12,12 @@ class Mysql extends Conexion {
     public function insert(string $query, array $arrValues) {
         try {
             $insert = $this->conexion->prepare($query);
-            
             $respInsert = $insert->execute($arrValues);
             $lastId = $respInsert ? $this->conexion->lastInsertId() : -1;
             $insert->closeCursor();
             return $lastId;
         } catch (Exception $e) {
-            throw $e;        
+            return "Error : {$e->getMessage()}";
         }
     }
 
@@ -26,10 +25,10 @@ class Mysql extends Conexion {
         try {
             $select = $this->conexion->query($query);
             $request = $select->fetchAll(PDO::FETCH_ASSOC);
-            $select->closeCursor(); 
+            $select->closeCursor();
             return $request;
         } catch (Exception $e) {
-            throw $e;
+            return "Error : {$e->getMessage()}";
         }
     }
 
@@ -41,7 +40,7 @@ class Mysql extends Conexion {
             $select->closeCursor();
             return $request;
         } catch (Exception $e) {
-            throw $e;
+            return "Error : {$e->getMessage()}";
         }
     }
 
@@ -52,7 +51,7 @@ class Mysql extends Conexion {
             $update->closeCursor();
             return $respUpdate;
         } catch (Exception $e) {
-            throw $e;
+            return "Error : {$e->getMessage()}";
         }
     }
 
@@ -63,19 +62,8 @@ class Mysql extends Conexion {
             $delete->closeCursor();
             return $respDelete;
         } catch (Exception $e) {
-            throw $e;
+            return "Error : {$e->getMessage()}";
         }
-    }
-    public function beginTransaction() {
-        return $this->conexion->beginTransaction();
-    }
-
-    public function commit() {
-        return $this->conexion->commit();
-    }
-
-    public function rollback() {
-        return $this->conexion->rollBack();
     }
 
 }

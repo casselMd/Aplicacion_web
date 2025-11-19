@@ -1,0 +1,68 @@
+    <!-- dashboard.component.html -->
+    <div class="p-6 bg-card rounded-lg shadow space-y-6">
+
+    <!-- Tarjetas -->
+    <div class="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 gap-6">
+
+        <!-- Clientes Activos -->
+        <div class="bg-background rounded-xl shadow-[0_0_10px_rgba(255,255,255,0.15)] p-5 flex flex-col justify-between">
+        <div>
+            <p class="text-sm text-gray-400 flex items-center gap-2">
+            <i class="fas fa-users fa-2xl text-blue-400"></i>
+            Clientes Activos
+            </p>
+            <p class="text-2xl font-bold text-indigo-400">{{ totalClientesActivos }}</p>
+        </div>
+        </div>
+
+        <!-- Empleados Activos -->
+        <div class="bg-background rounded-xl shadow-[0_0_10px_rgba(255,255,255,0.15)] p-5 flex flex-col justify-between">
+        <div>
+            <p class="text-sm text-gray-400 flex items-center gap-2">
+            <i class="fas fa-user-tie fa-2xl text-green-400"></i>
+            Empleados Activos
+            </p>
+            <p class="text-2xl font-bold text-indigo-400">{{ totalEmpleadosActivos }}</p>
+        </div>
+        </div>
+
+    </div>
+
+    <!-- Gráficos -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+        <app-ventas-del-dia></app-ventas-del-dia>
+        <app-productos-mas-vendidos class="col-span-2"></app-productos-mas-vendidos>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-center">
+        <app-ventas-dia-semana></app-ventas-dia-semana>
+        <app-productos-bajo-stock></app-productos-bajo-stock>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+        <app-ventas-mensual class="col-span-3"></app-ventas-mensual>
+    </div>
+
+    <!-- Comparativa Mensual -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+        <div class="bg-background rounded-lg shadow p-6 col-span-3">
+        <h3 class="text-lg font-semibold mb-4">Comparativa mensual</h3>
+        <div #chartContainer class="p-2">
+            <apx-chart
+            #chart
+            [series]="chartOptions.series"
+            [chart]="chartOptions.chart"
+            [xaxis]="chartOptions.xaxis"
+            [stroke]="chartOptions.stroke"
+            [dataLabels]="chartOptions.dataLabels"
+            [title]="chartOptions.title"
+            [yaxis]="chartOptions.yaxis"
+            [legend]="chartOptions.legend"
+            [colors]="chartOptions.colors"
+            [tooltip]="chartOptions.tooltip"
+            ></apx-chart>
+        </div>
+        </div>
+    </div>
+
+    </div>

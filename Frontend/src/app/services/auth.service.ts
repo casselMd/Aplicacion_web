@@ -30,7 +30,7 @@
             'Content-Type': 'application/json',
         });
         return this.http.post<{ data : {access_token: string, token_empleado:string },status:boolean,msg : string}>
-        (`${this.url}/empleado/login`, JSON.stringify(credentials), {headers});
+        (`${this.url}/empleado/login`, (credentials), {headers});
         }
     
         // Llama a la API para verificar la validez del token
@@ -68,7 +68,7 @@
     //   localStorage.setItem('tokenJWT', auth.tokenJWT);
     //   localStorage.setItem('token_empleado', auth.token_empleado);
     // }
-    private apiUrl = 'http://localhost/Delicias/Backend';
+    private apiUrl = 'http://localhost/Delicias/backend';
 
 
     obtenerTokensDesdeServidor(auth_id: string): Observable<any> {

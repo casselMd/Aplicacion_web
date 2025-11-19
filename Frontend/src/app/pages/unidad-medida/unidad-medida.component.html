@@ -1,0 +1,151 @@
+    <div class="bg-general-100 overflow-y-hidden p-6 rounded-lg shadow-lg">
+    <div class="flex justify-between mb-4">
+        <h1 class="text-2xl font-bold mb-4">Gestión de Unidades de Medida</h1>
+        <button 
+        type="button"
+        class="bg-background text-text bg-opacity-70 font-semibold px-2 rounded shadow hover:opacity-90 cursor-default">
+        {{ totalUnidades }} unidades
+        </button>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-4 mb-6">
+        <button
+        class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700"
+        (click)="abrirModal(true)">
+        <i class="fa fa-plus mr-2"></i> Agregar Unidad
+        </button>
+
+        <input
+        type="text"
+        placeholder="🔍 Buscar unidad..."
+        [(ngModel)]="filtros.termino"
+        (ngModelChange)="aplicarFiltros()"
+        class="bg-card flex-1 min-w-[200px] border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"/>
+
+        <select
+        [(ngModel)]="filtros.estado"
+        (ngModelChange)="aplicarFiltros()"
+        class="bg-card border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        title="Filtrar por estado"
+        aria-label="Filtrar por estado"
+        >
+        <option [ngValue]="null">— Todos los estados —</option>
+        <option [ngValue]="1">Activo</option>
+        <option [ngValue]="0">Inactivo</option>
+        </select>
+    </div>
+
+    <div *ngIf="modalOpen" class="fixed inset-0 bg-background bg-opacity-50 flex items-center justify-center z-50">
+        <div class="bg-card rounded-lg shadow-lg w-full max-w-md p-6">
+        <h2 class="text-xl font-semibold mb-4 text-text">
+            {{ modoEdicion ? 'Editar Unidad' : 'Registrar Unidad' }}
+        </h2>
+        <form [formGroup]="formulario" (ngSubmit)="guardar()" class="space-y-4">
+            <input formControlName="id" type="hidden" />
+            
+            <div>
+            <label for="nombre" class="block mb-1 font-medium text-text">Nombre</label>
+            <input
+                id="nombre"
+                formControlName="nombre"
+                type="text"
+                class="bg-card w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                title="Nombre"
+                aria-label="Nombre"
+            />
+            </div>
+
+            <div>
+            <label for="simbolo" class="block mb-1 font-medium text-text">Símbolo</label>
+            <input
+                id="simbolo"
+                formControlName="simbolo"
+                type="text"
+                class="bg-card w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                title="Símbolo"
+                aria-label="Símbolo"
+            />
+            </div>
+
+            <div>
+            <label for="status" class="block mb-1 font-medium text-text">Status</label>
+            <select
+                id="status"
+                formControlName="status"
+                class="bg-card w-full border rounded px-3 py-2"
+                title="Estado del registro"
+                aria-label="Estado del registro"
+            >
+                <option [ngValue]="1">Activo</option>
+                <option [ngValue]="0">Inactivo</option>
+            </select>
+            </div>
+
+            <div class="flex justify-end space-x-2 mt-4">
+            <button
+                type="button"
+                (click)="cerrarModal()"
+                class="bg-background text-text px-4 py-2 rounded hover:bg-nocturne-purple">
+                Cancelar
+            </button>
+            <button
+                type="submit"
+                [disabled]="formulario.invalid"
+                class="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">
+                {{ modoEdicion ? 'Actualizar' : 'Registrar' }}
+            </button>
+            </div>
+        </form>
+        </div>
+    </div>
+
+    <div class="overflow-x-auto rounded-xl">
+        <table class="min-w-full bg-card shadow-lg text-sm">
+        <thead class="bg-tabla text-text uppercase bg-opacity-25">
+            <tr>
+            <th class="px-6 py-3 text-left">ID</th>
+            <th class="px-6 py-3 text-left">Nombre</th>
+            <th class="px-6 py-3 text-left">Símbolo</th>
+            <th class="px-6 py-3 text-left">Estado</th>
+            <th class="px-6 py-3 text-center">Acciones</th>
+            </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-200 divide-opacity-5">
+            <tr *ngFor="let unidad of unidadesFiltradas" class="hover:bg-nocturne-purple hover:bg-opacity-60">
+            <td class="px-6 py-3">{{ unidad.id }}</td>
+            <td class="px-6 py-3">{{ unidad.nombre }}</td>
+            <td class="px-6 py-3">{{ unidad.simbolo }}</td>
+            <td class="px-6 py-3">
+                <span [ngClass]="unidad.status ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'"
+                    class="text-xs font-semibold px-2.5 py-0.5 rounded-full">
+                {{ unidad.status ? 'activo' : 'inactivo' }}
+                </span>
+            </td>
+            <td class="px-6 py-3 text-center">
+            <button
+            (click)="abrirModal(false, unidad)"
+            class="bg-yellow-500 text-white px-3 py-1 rounded mr-2"
+            title="Editar unidad"
+            aria-label="Editar unidad"
+            >
+            <i class="fas fa-edit fa-lg"></i>
+            </button>
+
+            <button
+            *ngIf="unidad.status == 1"
+            (click)="eliminar(unidad.id)"
+            class="bg-red-500 text-white px-3 py-1 rounded"
+            title="Eliminar unidad"
+            aria-label="Eliminar unidad"
+            >
+            <i class="fa-solid fa-trash fa-lg"></i>
+            </button>
+            </td>
+            </tr>
+            <tr *ngIf="unidadesFiltradas.length === 0">
+            <td colspan="5" class="text-center px-4 py-4">No hay resultados</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+    </div>

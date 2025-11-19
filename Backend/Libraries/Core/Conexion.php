@@ -10,7 +10,7 @@ class Conexion {
             $this->conexion = new PDO($cadenaConexion, DB_USER, DB_PASSWORD);
             $this->conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            echo "ERROR : {$e->getMessage()}. ";
+            echo "ERROR  {$e->getMessage()}. ";
         }
     }
 

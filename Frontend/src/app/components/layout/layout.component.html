@@ -1,18 +1,18 @@
 <!-- Layout completo -->
-<div class="h-[100vh] overflow-hidden flex flex-col bg-background text-text font-sans">
+<div class="h-[100vh] overflow-hidden flex flex-col bg-background text-black font-sans">
 
     <!-- Banner fijo en la parte superior -->
-    <div class="fixed top-0 left-3 w-[96%] z-50 bg-card text-white flex items-center justify-between px-6 py-2 shadow-lg rounded-full mt-1 ml-3 mr-3 mb-2" >
+    <div class="fixed top-0 left-3 w-[96%] z-50 bg-zinc-800 text-white flex items-center justify-between px-6 py-2 shadow-lg rounded-full mt-1 ml-3 mr-3 mb-2" >
         <!-- Nombre de la empresa con logo -->
         <div class="flex items-center space-x-2 text-xl font-semibold">
         <img src="aqui_coloca_la_ruta_del_logo_cesar" alt="Logo" class="w-8 h-8 object-cover rounded-full  " />
-        <span>Amazon Coffee</span>
+        <span>Panaderia Delicias</span>
         </div>
 
 
         <div class="flex items-center space-x-4">
 
-        <div class="text-text">
+        <div class="text-white">
         {{nombreEmpleado}}
         </div>
         <!-- Notificaciones -->
@@ -48,7 +48,7 @@
         <!-- SIDEBAR -->
         <app-sidebar
         class="group relative w-16 hover:w-64 transition-all duration-300 
-                bg-card text-white overflow-y-auto scrollbar-hide p-2 flex flex-col rounded-xl">
+                bg-zinc-800 text-black overflow-y-auto scrollbar-hide p-2 flex flex-col rounded-xl">
         </app-sidebar>
 
         <!-- MAIN -->
@@ -72,8 +72,8 @@
             class="w-20 h-20 rounded-full object-cover border-2 border-white"
             />
             <div>
-            <h2 class="text-2xl font-bold text-text">Mi Perfil</h2>
-            <p class="text-text text-sm">{{ empleado.rol }}</p>
+            <h2 class="text-2xl font-bold text-blacks">Mi Perfil</h2>
+            <p class="text-black text-sm">{{ empleado.rol }}</p>
             </div>
         </div>
         <button type="button" (click)="cerrarModal()" class="text-white text-2xl hover:text-red-400 mt-4 md:mt-0">
@@ -81,23 +81,42 @@
         </button>
         </div>
 
-        <!-- Datos personales -->
-        <form [formGroup]="perfilForm" class="space-y-4">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-            <label class="block text-sm font-medium text-text">Nombre</label>
-            <input formControlName="nombre" [disabled]="!modoEdicion" class="w-full bg-card text-text border p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            </div>
-            <div>
-            <label class="block text-sm font-medium text-text">Apellidos</label>
-            <input formControlName="apellidos" [disabled]="!modoEdicion" class="w-full bg-card text-text border p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            </div>
-            <div class="md:col-span-2">
-            <label class="block text-sm font-medium text-text">DNI</label>
-            <input formControlName="dni" [disabled]="!modoEdicion" class="w-full bg-card text-text border p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            </div>
+    <!-- Datos personales -->
+    <form [formGroup]="perfilForm" class="space-y-4">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+        <label for="nombre" class="block text-sm font-medium text-black">Nombre</label>
+        <input
+            id="nombre"
+            type="text"
+            formControlName="nombre"
+            [disabled]="!modoEdicion"
+            class="w-full bg-card text-black border p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
         </div>
 
+        <div>
+        <label for="apellidos" class="block text-sm font-medium text-black">Apellidos</label>
+        <input
+            id="apellidos"
+            type="text"
+            formControlName="apellidos"
+            [disabled]="!modoEdicion"
+            class="w-full bg-card text-black border p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        </div>
+
+        <div class="md:col-span-2">
+        <label for="dni" class="block text-sm font-medium text-black">DNI</label>
+        <input
+            id="dni"
+            type="text"
+            formControlName="dni"
+            [disabled]="!modoEdicion"
+            class="w-full bg-card text-black border p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500"
+        />
+        </div>
+    </div>
         <div class="flex justify-end space-x-2 mt-4">
             <button type="button" (click)="activarEdicion()" *ngIf="!modoEdicion" class="bg-indigo-500 text-white px-4 py-2 rounded">Editar</button>
             <button type="button" (click)="actualizarDatos()" *ngIf="modoEdicion" class="bg-green-600 text-white px-4 py-2 rounded">Actualizar</button>
@@ -106,27 +125,53 @@
 
         <hr class="opacity-30" />
 
-        <!-- Actualizar credenciales -->
-        <div>
-        <button type="button" class="bg-blue-600 text-white px-4 py-2 rounded mb-3" (click)="mostrarCredenciales = !mostrarCredenciales">
-            {{ mostrarCredenciales ? 'Ocultar' : 'Actualizar Credenciales' }}
-        </button>
+    <!-- Actualizar credenciales -->
+    <div class="mt-6 border-t pt-6">
+    <button
+        type="button"
+        class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg shadow transition"
+        (click)="mostrarCredenciales = !mostrarCredenciales"
+    >
+        <i class="fa-solid fa-user-lock"></i>
+        {{ mostrarCredenciales ? 'Ocultar' : 'Actualizar Credenciales' }}
+    </button>
 
-        <form *ngIf="mostrarCredenciales" [formGroup]="credencialesForm" class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-                <label class="block text-sm font-medium text-text">Usuario</label>
-                <input formControlName="username" class="w-full bg-card text-text border p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-text">Contraseña</label>
-                <input type="password" formControlName="password" class="w-full bg-card text-text border p-2 rounded focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-            </div>
-            </div>
-            <div class="flex justify-end">
-            <button type="button" (click)="actualizarCredenciales()" class="bg-indigo-600 text-white px-4 py-2 rounded">Guardar Cambios</button>
-            </div>
-        </form>
+    <form
+        *ngIf="mostrarCredenciales"
+        [formGroup]="credencialesForm"
+        class="space-y-4 mt-4 bg-card p-5 rounded-lg shadow border"
+    >
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+            <label class="block text-sm font-medium text-text">Usuario</label>
+            <input
+            formControlName="username"
+            placeholder="Ingresa nuevo usuario"
+            class="w-full bg-background text-text border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
         </div>
+        <div>
+            <label class="block text-sm font-medium text-text">Contraseña</label>
+            <input
+            type="password"
+            formControlName="password"
+            placeholder="Ingresa nueva contraseña"
+            class="w-full bg-background text-text border p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+        </div>
+        </div>
+
+        <div class="flex justify-end">
+        <button
+            type="button"
+            (click)="actualizarCredenciales()"
+            class="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg shadow transition"
+        >
+            Guardar Cambios
+        </button>
+        </div>
+    </form>
+    </div>
+
     </div>
 </div>

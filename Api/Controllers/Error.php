@@ -5,13 +5,11 @@ class Errors extends Controller
     public function __construct()
     {
         parent::__construct();
+        $this->index();
     }
 
-    public function notFound() {
+    public function index() {
         $this->view->getView($this, "error");
     }
 }
 
-
-$error = new Errors();
-$error->notFound();

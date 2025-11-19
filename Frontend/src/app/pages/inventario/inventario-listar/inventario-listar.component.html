@@ -1,0 +1,121 @@
+    <div class="p-6">
+    <!-- Encabezado -->
+    <div class="grid grid-cols-2 mb-6">
+        <h1 class="text-2xl font-bold text-text">Listado de Movimientos de Inventario</h1>
+        <div class="place-items-center">
+        <nav class="bg-mountain-950 p-4 rounded shadow-md">
+            <ul class="flex space-x-4">
+            <li>
+                <a routerLink="/inventario/registrar" class="inline-flex items-center py-2 px-3 border-b-2 border-transparent hover:border-indigo-400 hover:text-indigo-400">
+                <i class="fa-solid fa-plus"></i>
+                <div class="ml-2">Registrar</div>
+                </a>
+            </li>
+            <li>
+                <a routerLink="/inventario/listar" class="inline-flex items-center py-2 px-3 border-b-2 border-indigo-400 text-indigo-400">
+                <i class="fa-solid fa-list"></i>
+                <div class="ml-2">Listar</div>
+                </a>
+            </li>
+            </ul>
+        </nav>
+        </div>
+    </div>
+
+    <!-- Filtro -->
+    <div class="flex items-center justify-between mb-4">
+        <div class="text-right">
+        <input
+            type="text"
+            placeholder="Buscar por ID o producto..."
+            [(ngModel)]="filtro"
+            (input)="filtrarMovimientos()"
+            class="bg-card border rounded-md px-4 py-2"
+        />
+        </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="overflow-x-auto rounded-xl">
+        <table class="min-w-full bg-card rounded shadow">
+        <thead class="bg-tabla text-text uppercase bg-opacity-25">
+            <tr>
+            <th class="px-4 py-2">ID</th>
+            <th class="px-4 py-2">Producto</th>
+            <th class="px-4 py-2">Tipo</th>
+            <th class="px-4 py-2">Cantidad</th>
+            <th class="px-4 py-2">Fecha</th>
+            <th class="px-4 py-2">Empleado</th>
+            <th class="px-4 py-2">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let movimiento of movimientosFiltrados" class="hover:bg-nocturne-purple hover:bg-opacity-60">
+            <td class="px-4 py-2">{{ movimiento.idMovimiento }}</td>
+            <td class="px-4 py-2">{{ movimiento?.producto?.nombre }}</td>
+            <td class="px-4 py-2">{{ movimiento?.tipo_movimiento?.nombre }}</td>
+            <td class="px-4 py-2 text-center">{{ movimiento.cantidad }}</td>
+            <td class="px-4 py-2">{{ movimiento.fecha }}</td>
+            <td class="px-4 py-2">{{ movimiento.empleado.nombre }}</td>
+            <td class="px-4 py-2 flex justify-between">
+                <button title="ver"
+                (click)="verDetalle(movimiento)"
+                class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600"
+                >
+                <i class="fa-solid fa-eye fa-lg"></i>
+                </button>
+                <button title="eliminar"
+                (click)="eliminarDetalle(movimiento.idMovimiento)"
+                class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                >
+                <i class="fa-solid fa-trash fa-lg"></i>
+                </button>
+            </td>
+            </tr>
+            <tr *ngIf="movimientosFiltrados.length === 0">
+            <td colspan="7" class="text-center py-4 text-gray-500">No se encontraron movimientos.</td>
+            </tr>
+        </tbody>
+        </table>
+    </div>
+
+    
+    </div>
+    <!-- Modal Detalle -->
+    <div
+    *ngIf="movimientoSeleccionado"
+    id="modalInventario"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    >
+    <div class="bg-card text-white rounded-lg shadow-lg p-8 w-full max-w-xl space-y-6">
+        
+        <!-- Cabecera -->
+        <div class="flex justify-between items-start border-b border-white/20 pb-4">
+        <div>
+            <h2 class="text-2xl font-bold">Detalle del Movimiento</h2>
+            <p class="text-sm text-white/70">ID: {{ movimientoSeleccionado.idMovimiento }}</p>
+        </div>
+        <button
+            class="text-white hover:text-red-400 text-2xl"
+            (click)="cerrarModal()"
+        >
+            ✕
+        </button>
+        </div>
+
+        <!-- Detalles -->
+        <div class="grid grid-cols-2 gap-4 text-sm">
+        <div><strong>Producto:</strong><br />{{ movimientoSeleccionado?.producto?.nombre }}</div>
+        <div><strong>Tipo Movimiento:</strong><br />{{ movimientoSeleccionado?.tipo_movimiento?.nombre }}</div>
+        <div><strong>Cantidad:</strong><br />{{ movimientoSeleccionado?.cantidad }}</div>
+        <div><strong>Fecha:</strong><br />{{ movimientoSeleccionado?.fecha }}</div>
+        <div><strong>Empleado:</strong><br />{{ movimientoSeleccionado?.empleado?.nombre }}</div>
+        <div class="col-span-2">
+            <strong>Observaciones:</strong><br />
+            <div class="bg-white/10 p-2 rounded text-white/90 min-h-[2.5rem]">
+            {{ movimientoSeleccionado?.observaciones || 'Sin observaciones' }}
+            </div>
+        </div>
+        </div>
+    </div>
+    </div>

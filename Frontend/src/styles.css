@@ -1,6 +1,6 @@
-    @tailwind base;
-    @tailwind components;
-    @tailwind utilities;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
     /* Oculta scrollbars (manual y 100% funcional) */
     .scrollbar-hide::-webkit-scrollbar {
