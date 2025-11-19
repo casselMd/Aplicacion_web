@@ -1,10 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&family=Pacifico&display=swap');
 
+/* === Fondo general === */
 ion-content.login-content {
-  --background: linear-gradient(135deg, #e0f2fe, #f8fafc, #dbeafe);
+  --background: linear-gradient(135deg, #fff7e6, #fefaf3, #fcefd4);
   font-family: 'Poppins', sans-serif;
+  color: #4a3c2a;
 }
 
+/* === Contenedor principal === */
 .login-container {
   display: flex;
   flex-direction: column;
@@ -14,76 +17,82 @@ ion-content.login-content {
   padding: 1.5rem;
 }
 
+/* === Tarjeta del login === */
 .login-card {
   width: 100%;
   max-width: 420px;
-  background: rgba(255, 255, 255, 0.6);
-  backdrop-filter: blur(16px);
-  border-radius: 1.5rem;
-  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.25);
+  background: #ffffff;
+  border-radius: 2rem;
+  box-shadow: 0 8px 20px rgba(107, 62, 38, 0.15);
   padding: 2rem;
   text-align: center;
-  border: 1px solid rgba(240, 249, 255, 0.5);
+  border: 1px solid #f5e2c8;
 }
 
-/* Título */
+/* === Título principal === */
 .titulo-app {
   font-family: 'Pacifico', cursive;
-  font-size: 2.2rem;
-  color: #1d4ed8;
-  margin-bottom: 0.5rem;
+  font-size: 2.5rem;
+  color: #8b5e34;
+  margin-bottom: 0.8rem;
 }
 
-/* Inputs */
+/* === Inputs === */
 ion-item.input-item {
-  --background: transparent;
-  --border-color: #bfdbfe;
-  --highlight-color-focused: #1d4ed8;
-  color: #1e3a8a;
+  --background: #fff8ef;
+  --border-color: #f3d9b1;
+  --highlight-color-focused: #8b5e34;
+  color: #5a4330;
   border-radius: 1rem;
   margin-bottom: 1rem;
   --padding-start: 0.8rem;
   --inner-padding-end: 0.8rem;
-  box-shadow: 0 2px 6px rgba(30, 58, 138, 0.1);
+  box-shadow: 0 2px 6px rgba(139, 94, 52, 0.1);
 }
 
 ion-icon.input-icon {
-  color: #2563eb;
+  color: #8b5e34;
 }
 
 ion-input.input-field {
   font-size: 1rem;
-  color: #1e293b;
+  color: #5a4330;
 }
 
-/* Botón principal */
+/* === Botón principal (Iniciar sesión) === */
 .btn-login {
-  --background: linear-gradient(90deg, #3b82f6, #2563eb, #1d4ed8);
-  --background-hover: linear-gradient(90deg, #2563eb, #1d4ed8);
+  --background: linear-gradient(90deg, #d4a373, #b07d48, #8b5e34);
   --border-radius: 1.5rem;
   font-weight: 600;
-  box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+
   margin-top: 0.5rem;
+  color: white;
+  transition: all 0.3s ease;
 }
 
-/* Botón Google */
+.btn-login:hover {
+  --background: linear-gradient(90deg, #b07d48, #8b5e34);
+  transform: translateY(-2px);
+}
+
+/* === Botón de Google === */
 .btn-google {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.6rem;
-  border-radius: 1.5rem;
-  --border-color: #cbd5e1;
-  --color: #334155;
-  background: #fff;
+  --border-color: #e5d1b8;
+  color: #5a4330;
+  background: #fff8ef;
   font-weight: 500;
   text-transform: none;
   transition: all 0.3s ease;
+  margin-top: 1rem;
 }
 
 .btn-google:hover {
-  background: #f1f5f9;
-  box-shadow: 0 4px 10px rgba(30, 41, 59, 0.1);
+  background: #fff3df;
+  box-shadow: 0 4px 10px rgba(139, 94, 52, 0.15);
 }
 
 .google-icon {
@@ -91,40 +100,40 @@ ion-input.input-field {
   height: 20px;
 }
 
-/* Enlace recuperar contraseña */
+/* === Enlace de recuperación === */
 .recuperar-link {
   display: inline-block;
   margin-top: 1rem;
-  color: #2563eb;
+  color: #b07d48;
   font-size: 0.9rem;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
 .recuperar-link:hover {
-  color: #1d4ed8;
+  color: #8b5e34;
 }
 
-/* Frase y derechos */
+/* === Frase y derechos === */
 .footer-text {
   text-align: center;
   margin-top: 1.5rem;
   font-size: 0.8rem;
-  color: #475569;
+  color: #7c6248;
 }
 
 .slogan {
   font-style: italic;
-  color: #1e40af;
+  color: #8b5e34;
   margin-bottom: 0.3rem;
 }
 
 .derechos {
   font-size: 0.75rem;
-  color: #64748b;
+  color: #b07d48;
 }
 
-/* Imagen lateral */
+/* === Imagen lateral (opcional) === */
 .imagen-section {
   margin-top: 1.2rem;
 }
@@ -132,4 +141,132 @@ ion-input.input-field {
 .imagen-logo {
   width: 90px;
   opacity: 0.9;
+}
+
+/* === Animación sutil al aparecer === */
+.login-card {
+  animation: fadeIn 0.8s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* === Formas decorativas tipo nube (más visibles) === */
+.shape {
+  position: absolute;
+  border-radius: 60% 40% 30% 70% / 60% 30% 70% 40%;
+  z-index: -1;
+  opacity: 0.9;
+  filter: blur(2px);
+  transform: rotate(10deg);
+  box-shadow: 0 10px 20px rgba(139, 94, 52, 0.08);
+}
+
+/* Superior izquierda */
+.shape1 {
+  top: -60px;
+  left: -120px;
+  width: 420px;
+  height: 320px;
+  background: #fbe0b2; /* dorado suave */
+}
+
+/* Inferior derecha */
+.shape2 {
+  bottom: -80px;
+  right: -120px;
+  width: 450px;
+  height: 350px;
+  background: #f7c98b; /* pan tostado claro */
+}
+
+/* Superior derecha */
+.shape3 {
+  top: 100px;
+  right: 180px;
+  width: 250px;
+  height: 200px;
+  background: #fce3b4; /* mantequilla */
+  opacity: 0.8;
+}
+
+/* Inferior izquierda */
+.shape4 {
+  bottom: 80px;
+  left: 120px;
+  width: 280px;
+  height: 200px;
+  background: #f6d298;
+  opacity: 0.75;
+}
+
+/* Lateral izquierda media */
+.shape5 {
+  top: 40%;
+  left: -200px;
+  width: 320px;
+  height: 260px;
+  background: #f8c47c;
+  opacity: 0.7;
+}
+
+
+
+.background-shapes {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  z-index: -1;
+}
+
+/* === Diseño lateral con imagen animada === */
+.login-flex {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.5rem;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 950px;
+}
+
+/* Formulario (mantiene tu estilo de .login-card) */
+.login-card {
+  flex: 1;
+}
+
+/* Imagen animada de panadería */
+.imagen-panaderia {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 1.2s ease-in-out;
+}
+
+.imagen-animada {
+  width: 320px;
+  max-width: 100%;
+  border-radius: 1.5rem;
+  box-shadow: 0 6px 20px rgba(139, 94, 52, 0.2);
+}
+
+.background-shapes {
+  position: absolute;
+  inset: 0;
+  z-index: 0; /* ← aseguramos que quede detrás */
+  pointer-events: none; /* ← ignora clics */
+}
+
+.reset-container,
+.login-container {
+  position: relative;
+  z-index: 10; /* ← por encima de las formas */
 }

@@ -8,7 +8,8 @@ import { addIcons } from 'ionicons';
 import { lockClosedOutline, personOutline } from 'ionicons/icons';
 import { CommonModule } from '@angular/common';
 import {
-  IonButton, IonContent, IonIcon, IonItem, IonInput
+  IonButton, IonContent, IonIcon, IonItem, IonInput,
+  IonRippleEffect
 } from '@ionic/angular/standalone';
 
 @Component({
@@ -23,7 +24,8 @@ import {
     IonButton,
     IonInput,
     CommonModule,
-    FormsModule
+    FormsModule,
+    IonRippleEffect
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
