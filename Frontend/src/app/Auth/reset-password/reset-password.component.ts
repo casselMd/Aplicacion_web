@@ -3,23 +3,13 @@
     import { ActivatedRoute, Router, RouterLink } from '@angular/router';
     import { AuthService } from '../../services/auth.service';
     import { CommonModule } from '@angular/common';
-import { IonButton, IonCard, IonCardContent, IonContent, IonIcon, IonInput, IonItem, IonLabel, IonText } from '@ionic/angular/standalone';
 
     @Component({
     selector: 'app-reset-password',
     standalone:true,
     imports:[  CommonModule,
     ReactiveFormsModule,
-    RouterLink,
-    IonContent,
-    IonInput,
-    IonButton,
-    IonText,
-    IonItem,
-    IonLabel,
-    IonIcon,
-    IonCard,
-    IonCardContent],
+    RouterLink],
     templateUrl: './reset-password.component.html',
     styleUrls: ['./reset-password.component.css']
     })

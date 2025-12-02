@@ -21,30 +21,7 @@ class InventarioModel extends Mysql {
     public function setStatus($status) { $this->status = intval($status); }
     public function setEmpleadoId($id) { $this->empleadoId = intval($id); }
 
-    public function agregar() {
-        $sql = "SELECT stock FROM producto where id = $this->productoId";
-        $resProducto = $this->selectAll($sql);
 
-        if ($resProducto["stock"] < $this->cantidad)  throw new Exception("Stock insuficiente. Solo quedan {$resProducto["stock"]} unidades.",200);
-        
-
-
-        $sql = "INSERT INTO inventario (producto_id, tipo_movimiento_id, cantidad, fecha, observaciones, status, empleado_id)
-                VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        $data = [
-            $this->productoId,
-            $this->tipoMovimientoId,
-            $this->cantidad,
-            $this->fecha,
-            $this->observaciones,
-            $this->status,
-            $this->empleadoId
-        ];
-
-
-        return $this->insert($sql, $data);
-    }
 
     public function actualizar() {
         $sql = "UPDATE inventario SET producto_id=?, tipo_movimiento_id=?, cantidad=?, fecha=?, observaciones=?, status=?, empleado_id=?
@@ -83,7 +60,7 @@ class InventarioModel extends Mysql {
     public function listar() {
     try {
         $sql = "SELECT 
-                i.idMovimiento,
+                i.idMovimiento As idMovimiento,
                 i.cantidad,
                 i.fecha,
                 i.observaciones,
@@ -110,6 +87,8 @@ class InventarioModel extends Mysql {
             ORDER BY i.fecha DESC";
 
     $raw = $this->selectAll($sql);
+
+    if (!is_array($raw)) return [];
 
     $inventario = [];
 
@@ -144,5 +123,19 @@ class InventarioModel extends Mysql {
         throw $e;
     }
 }
+
+public function agregar() {
+        $sql = "INSERT INTO inventario (producto_id, tipo_movimiento_id, cantidad, fecha, observaciones, status, empleado_id)
+                VALUES (?, ?, ?, NOW(), ?, ?, ?)";
+        $data = [
+            $this->productoId,
+            $this->tipoMovimientoId,
+            $this->cantidad,
+            $this->observaciones,
+            $this->status,
+            $this->empleadoId
+        ];
+        return $this->insert($sql, $data);
+    }
 
 }

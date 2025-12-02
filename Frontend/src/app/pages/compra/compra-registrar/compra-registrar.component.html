@@ -138,7 +138,7 @@
                 <!-- Contenedor con posicionamiento relativo para el dropdown -->
             <div class="relative w-full" matAutocompleteOrigin #origin="matAutocompleteOrigin">
                 <input
-                    type="text"
+                    type="text" 
                     matInput
                     [formControl]="controlProducto"
                     [matAutocomplete]="auto"
@@ -151,13 +151,15 @@
                 </div>
 
                 <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption [displayWith]="displayFn">
-                <mat-option
-                    *ngFor="let option of productosFiltrados$ | async"
-                    [value]="option"
-                    class="!bg-gray-100 !text-gray-800 hover:!bg-gray-200"
-                >
-                    {{ option.nombre }}
-                </mat-option>
+                @if (productosFiltrados$ | async; as productos) {
+                    @for (option of productos; track option.id) {
+                        <mat-option
+                        [value]="option"
+                        class="!bg-gray-100 !text-gray-800 hover:!bg-gray-200">
+                        {{ option.nombre }}
+                        </mat-option>
+                    }
+                }
                 </mat-autocomplete>
 
             </div>
@@ -214,43 +216,47 @@
     </div>
 
     <!-- Tabla de Detalles Agregados -->
-    <div class=" rounded shadow-md " *ngIf="products.length !== 0">
+    <div class="rounded shadow-md">
         <h2 class="text-xl font-semibold mb-4 text-gray-800">Productos Registrados</h2>
         <div class="overflow-x-auto rounded-xl">
-        <table class="min-w-full bg-card  rounded shadow-md">
-            <thead class="bg-tabla text-text uppercase text-sm">
-            <tr>
-                <th class="px-6 py-2  text-center">ID</th>
-                <th class="px-6 py-2  text-center">Producto</th>
-                <th class="px-6 py-2  text-center">Cantidad</th>
-                <th class="px-6 py-2  text-center">Precio U.</th>
-                <th class="px-6 py-2  text-center">Subtotal</th>
-                <th class="px-6 py-2  text-center">Acciones</th>
-            </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 divide-opacity-5">
-            <tr *ngFor="let d of products; let i = index" class="hover:bg-nocturne-purple hover:bg-opacity-60">
-                <td class="px-4 py-2  text-center">{{ d.id_producto }}</td>
-                <td class="px-4 py-2  text-center">{{d.nombre}} </td>
-                <td class="px-4 py-2  text-center">{{ d.cantidad }}</td>
-                <td class="px-4 py-2  text-center">{{ d.precio_unitario | number:'1.2-2' }}</td>
-                <td class="px-4 py-2  text-center">{{ (d.precio_unitario * d.cantidad) | number:'1.2-2' }}</td>
-                <td class="px-4 py-2  text-center">
-                <button
-                class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                (click)="removeDetalle(i)"
-                title="Eliminar producto"
-                aria-label="Eliminar producto"
-                >
-                <i class="fa fa-trash" aria-hidden="true"></i>
-                </button>
-                </td>
-            </tr>
-            <tr *ngIf="products.length === 0">
-                <td colspan="6" class="text-center px-4 py-4">No hay productos agregados</td>
-            </tr>
-            </tbody>
-        </table>
+            <table class="min-w-full bg-card rounded shadow-md">
+                <thead class="bg-tabla text-text uppercase text-sm">
+                    <tr>
+                        <th class="px-6 py-2 text-center">ID</th>
+                        <th class="px-6 py-2 text-center">Producto</th>
+                        <th class="px-6 py-2 text-center">Cantidad</th>
+                        <th class="px-6 py-2 text-center">Precio U.</th>
+                        <th class="px-6 py-2 text-center">Subtotal</th>
+                        <th class="px-6 py-2 text-center">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 divide-opacity-5">
+                    @for (d of products; track d.id_producto; let i = $index) {
+                        <tr class="hover:bg-nocturne-purple hover:bg-opacity-60">
+                            <td class="px-4 py-2 text-center">{{ d.id_producto }}</td>
+                            <td class="px-4 py-2 text-center">{{ d.nombre }}</td>
+                            <td class="px-4 py-2 text-center">{{ d.cantidad }}</td>
+                            <td class="px-4 py-2 text-center">{{ d.precio_unitario | number:'1.2-2' }}</td>
+                            <td class="px-4 py-2 text-center">{{ (d.precio_unitario * d.cantidad) | number:'1.2-2' }}</td>
+                            <td class="px-4 py-2 text-center">
+                                <button
+                                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+                                    (click)="removeDetalle(i)"
+                                    title="Eliminar producto"
+                                    aria-label="Eliminar producto"
+                                >
+                                    <i class="fa fa-trash" aria-hidden="true"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                    @if (products.length === 0) {
+                        <tr> 
+                            <td colspan="6" class="text-center px-4 py-4">No hay productos agregados</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
     </div>

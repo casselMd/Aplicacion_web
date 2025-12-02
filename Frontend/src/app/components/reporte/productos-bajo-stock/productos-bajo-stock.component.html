@@ -1,40 +1,41 @@
     <button (click)="abrirModal()" class="relative focus:outline-none" title="Producto con stock mínimo">
     <i class="fas fa-bell text-blue-400 text-xl"></i>
-    <span *ngIf="productoMinStock"
-            class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
+    @if (productoMinStock) {
+        <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-500"></span>
+    }
     </button>
 
     <!-- Modal -->
-    <div *ngIf="mostrar" class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
-    <div class="bg-card rounded-xl shadow-xl p-8 max-w-lg w-full">
+    @if (mostrar) {
+    <div class="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+        <div class="bg-card rounded-xl shadow-xl p-8 max-w-lg w-full">
         <div class="flex justify-between mb-4">
-        <h2 class="text-xl font-bold text-black text-center">Producto con stock mínimo</h2>
-        <button (click)="cerrarModal()" class="text-red-600 hover:text-red-800">✕</button>
+            <h2 class="text-xl font-bold text-black text-center">Producto con stock mínimo</h2>
+            <button (click)="cerrarModal()" class="text-red-600 hover:text-red-800">✕</button>
         </div>
 
-        <div *ngIf="productoMinStock; else noStock">
-        <div class="overflow-x-auto rounded-xl">
+        @if (productoMinStock) {
+            <div class="overflow-x-auto rounded-xl">
             <table class="w-full text-sm text-center">
-            <thead class="bg-zinc-900 text-text uppercase bg-opacity-25">
+                <thead class="bg-zinc-900 text-text uppercase bg-opacity-25">
                 <tr>
-                <th class="px-3 py-2">ID</th>
-                <th class="px-3 py-2">Producto</th>
-                <th class="px-3 py-2">Stock</th>
+                    <th class="px-3 py-2">ID</th>
+                    <th class="px-3 py-2">Producto</th>
+                    <th class="px-3 py-2">Stock</th>
                 </tr>
-            </thead>
-            <tbody class="divide-y divide-gray-200 divide-opacity-5">
+                </thead>
+                <tbody class="divide-y divide-gray-200 divide-opacity-5">
                 <tr class="hover:bg-nocturne-purple hover:bg-opacity-60">
-                <td class="px-3 py-2">{{ productoMinStock.id }}</td>
-                <td class="px-3 py-2">{{ productoMinStock.nombre }}</td>
-                <td class="px-3 py-2">{{ productoMinStock.stock }}</td>
+                    <td class="px-3 py-2">{{ productoMinStock.id }}</td>
+                    <td class="px-3 py-2">{{ productoMinStock.nombre }}</td>
+                    <td class="px-3 py-2">{{ productoMinStock.stock }}</td>
                 </tr>
-            </tbody>
+                </tbody>
             </table>
+            </div>
+        } @else {
+            <p class="text-center text-gray-600">No hay productos con stock bajo</p>
+        }
         </div>
-        </div>
-
-        <ng-template #noStock>
-        <p class="text-center text-gray-600">No hay productos con stock bajo</p>
-        </ng-template>
     </div>
-    </div>
+    }

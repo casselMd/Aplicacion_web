@@ -4,6 +4,7 @@
     import { ProductoService } from '../../../services/producto.service';
     import { InventarioService } from '../../../services/inventario.service';
     import { Producto } from '../../../Models/producto.model';
+    
 
     import { MatAutocompleteModule } from '@angular/material/autocomplete';
     import { MatFormFieldModule } from '@angular/material/form-field';
@@ -35,7 +36,7 @@
 
     controlProducto = new FormControl<Producto | null>(null);
     productosFiltrados$!: Observable<Producto[]>;
-    productoSeleccionado!: Producto;
+    productoSeleccionado: Producto | null = null;
 
     constructor(
         private fb: FormBuilder,
@@ -48,13 +49,14 @@
         this.inventarioForm = this.fb.group({
         stock: [null, [Validators.required, Validators.min(1)]],
         observaciones: [''],
-        tipo_movimiento_id: [null, Validators.required]
+        tipo_movimiento_id: [null, Validators.required] 
         });
 
         this.productoSvc.listar().subscribe(r => {
         if (r.status) {
             this.productos = r.data;
-            this.productos = this.productos.filter(p => p?.es_existente === 0 && p.status ===1)
+            this.productos = this.productos.filter(p => p?.es_existente === 1 && p.status ===1)
+            this.inicializarFiltroProductos();
         }
         });
 
@@ -77,6 +79,16 @@
         });
     }
 
+    private inicializarFiltroProductos() {
+    this.productosFiltrados$ = this.controlProducto.valueChanges.pipe(
+        startWith(''),
+        map(value => {
+            const texto = typeof value === 'string' ? value : value?.nombre || '';
+            return texto ? this._filter(texto) : this.productos.slice();
+        })
+    );
+}
+
     private _filter(value: string): Producto[] {
         const filterValue = value.toLowerCase();
         return this.productos.filter(p => p.nombre.toLowerCase().includes(filterValue));
@@ -96,14 +108,22 @@
         producto_id: this.productoSeleccionado.id,
         cantidad: this.inventarioForm.value.stock,
         observaciones: this.inventarioForm.value.observaciones,
-        tipo_movimiento_id: this.inventarioForm.value.tipo_movimiento_id
+        tipo_movimiento_id: this.inventarioForm.value.tipo_movimiento_id,
+        fecha: new Date().toISOString().split('T')[0]
         };
+        console.log('Payload inventario:', payload); 
 
         this.inventarioSvc.registrar(payload).subscribe({
-        next: () => {
+        next: (res) => {
+            console.log('Respuesta:', res);
+            if (res.status) {
             Swal.fire('Éxito', 'Movimiento registrado correctamente.', 'success');
             this.inventarioForm.reset();
             this.controlProducto.reset();
+            this.productoSeleccionado = null;
+            } else {
+                Swal.fire('Error', res.msg, 'error');
+            }
         },
         error: () => {
             Swal.fire('Error', 'Ocurrió un error al registrar el movimiento.', 'error');

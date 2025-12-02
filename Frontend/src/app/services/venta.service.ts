@@ -51,6 +51,7 @@
         .get(this.apiUrl + '/total_ventas_del_dia', { headers: this.getHeadersAuth() })
         .pipe(catchError(this.handleError));
     }
+    
     productosMasVendidos(limit:number): Observable<any> {
         return this.http
         .get(this.apiUrl + '/productos_mas_vendidos/'+ limit, { headers: this.getHeadersAuth() })
@@ -62,11 +63,13 @@
         .pipe(catchError(this.handleError));
     }
     
-    ventasMensual(): Observable<any> {
+        ventasMensual(): Observable<any> {
+        const url = `${this.apiUrl}/ventas_mensuales`;
         return this.http
-        .get(this.apiUrl + '/ventas_mensual/', { headers: this.getHeadersAuth() })
-        .pipe(catchError(this.handleError));
-    }
+            .get(url, { headers: this.getHeadersAuth() })
+            .pipe(catchError(this.handleError));
+        }
+
     
     private getHeadersAuth(): HttpHeaders {
         return new HttpHeaders({

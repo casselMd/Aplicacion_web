@@ -1,6 +1,7 @@
 <?php
 
 require_once("Models/ClienteModel.php");
+require_once("Models/InventarioModel.php");
 require_once("Models/MetodoPagoModel.php");
 require_once("Models/EmpleadoModel.php");
 
@@ -68,7 +69,6 @@ class Venta extends Controller {
                 $this->model->setCliente(new ClienteModel((int)$post["cliente_id"]));
                 $this->model->setTotal( (float)$post["total"]);
                 $this->model->setMetodoPago( new MetodoPagoModel((int)$post["metodo_pago_id"]));
-                $this->model->setDelivery(!empty($post["es_delivery"]) ? $post["es_delivery"] : 0);
 
                 // Extraer el array de detalles
                 $this->model->setDetalleVentas($post["detalles"]);
@@ -150,7 +150,6 @@ class Venta extends Controller {
                 $this->model->setCliente(new ClienteModel((int)$put["cliente_id"]));
                 $this->model->setTotal((float)$put["total"]);
                 $this->model->setMetodoPago(new MetodoPagoModel((int)$put["metodo_pago_id"]));
-                $this->model->setDelivery(!empty($post["es_delivery"]) ? $put["es_delivery"] : 0);
                 $this->model->setDetalleVentas($put["detalles"]);
 
                 $resultado = $this->model->actualizar(); // Este método debe implementarse en el modelo
@@ -258,6 +257,8 @@ class Venta extends Controller {
             jsonResponse($response, $e->getCode() ? (int)$e->getCode() : 400);
         }
     }
+
+    
     public function total_ventas_del_dia()
     {
         try {
@@ -317,27 +318,19 @@ class Venta extends Controller {
             jsonResponse(['status' => false, 'msg' => $e->getMessage()], 500);
         }
     }
-
-    public function ventas_por_tipo_atencion() {
+    public function ventas_mensuales() {
         try {
             if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
-                throw new Exception("Método no permitido", 405);
+                throw new Exception('Método no permitido.', 405);
             }
 
-            $datos = $this->model->obtenerVentasPorTipoAtencion();
-            jsonResponse([
-                "status" => true,
-                "msg"    => "Datos obtenidos correctamente.",
-                "data"   => $datos
-            ], 200);
+            $result = $this->model->obtenerVentasMensuales();
+            jsonResponse(['status' => true, 'data' => $result], 200);
+
         } catch (Exception $e) {
-            jsonResponse([
-                "status" => false,
-                "msg"    => "ERROR: " . $e->getMessage()
-            ], $e->getCode() ?: 400);
+            jsonResponse(['status' => false, 'msg' => $e->getMessage()], 500);
         }
     }
-
     
 }
 

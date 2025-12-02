@@ -92,25 +92,50 @@ import { Producto } from './../../Models/producto.model';
 
     // Ciclo de vida
     ngOnInit() {
+        this.iniciarGraficoVentas();
         this.obtenerClientesActivos();
         this.obtenerEmpleadosActivos();
         this.obtenerResumenCompras();
         this.obtenerResumenVentas();
-        this.iniciarGraficoVentas();
         this.cargarDatos();
     }
 
-    ngAfterViewInit(): void {
+    onChartMounted() {
+        console.log('Chart listo:', this.chart);
+        
+        // Actualizamos options si ya hay datos
+        const apex = (this.chart as any)?._chart;
+        if (apex) {
+            apex.updateOptions(this.chartOptions, false, true);
+        }
+
+        // Observador de redimensionamiento
         this.resizeObserver = new ResizeObserver(() => {
-        this.ngZone.run(() => {
-            if (this.chart) {
-            this.chart.updateOptions(this.chartOptions, false, true);
-            }
+            if (apex) apex.updateOptions(this.chartOptions, false, true);
         });
+        this.resizeObserver.observe(this.chartContainer.nativeElement);
+        }
+
+
+        ngAfterViewInit(): void {
+        // Asegura que Angular haya renderizado el DOM
+        setTimeout(() => {
+            const apex = (this.chart as any)?._chart;
+            if (apex) {
+            apex.updateOptions(this.chartOptions, false, true);
+            }
+        }, 0);
+
+        // ResizeObserver funcional con Tailwind
+        this.resizeObserver = new ResizeObserver(() => {
+            const apex = (this.chart as any)?._chart;
+            if (apex) apex.updateOptions(this.chartOptions, false, true);
         });
 
+        // Observa el contenedor con altura definida
         this.resizeObserver.observe(this.chartContainer.nativeElement);
-    }
+        }
+
 
     ngOnDestroy(): void {
         if (this.resizeObserver) this.resizeObserver.disconnect();

@@ -5,12 +5,6 @@
   "projects": {
     "app": {
       "projectType": "application",
-      "schematics": {
-        "@ionic/angular-toolkit:page": {
-          "styleext": "scss",
-          "standalone": true
-        }
-      },
       "root": "",
       "sourceRoot": "src",
       "prefix": "app",
@@ -26,6 +20,7 @@
             "polyfills": ["src/polyfills.ts"],
             "tsConfig": "tsconfig.app.json",
             "inlineStyleLanguage": "scss",
+
             "assets": [
               {
                 "glob": "**/*",
@@ -33,10 +28,16 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/custom-theme.scss","src/styles.css","src/global.scss", "src/theme/variables.scss"],
+
+            "styles": [
+              "src/styles.css",
+              "src/global.scss"
+            ],
+
             "scripts": [],
             "browser": "src/main.ts"
           },
+
           "configurations": {
             "production": {
               "budgets": [
@@ -59,18 +60,18 @@
               ],
               "outputHashing": "all"
             },
+
             "development": {
               "optimization": false,
               "extractLicenses": false,
               "sourceMap": true,
               "namedChunks": true
-            },
-            "ci": {
-              "progress": false
             }
           },
+
           "defaultConfiguration": "production"
         },
+
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
@@ -79,19 +80,18 @@
             },
             "development": {
               "buildTarget": "app:build:development"
-            },
-            "ci": {
-              "progress": false
             }
           },
           "defaultConfiguration": "development"
         },
+
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
             "buildTarget": "app:build"
           }
         },
+
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
@@ -107,16 +107,11 @@
                 "output": "assets"
               }
             ],
-            "styles": ["src/custom-theme.scss","src/styles.css","src/global.scss", "src/theme/variables.scss"],
+            "styles": ["src/styles.css", "src/global.scss"],
             "scripts": []
-          },
-          "configurations": {
-            "ci": {
-              "progress": false,
-              "watch": false
-            }
           }
         },
+
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
@@ -126,19 +121,12 @@
       }
     }
   },
+
   "cli": {
-    "schematicCollections": [
-      "@ionic/angular-toolkit"
-    ],
     "analytics": "424255c9-189e-4f6d-9455-d2ac202544a0"
   },
+
   "schematics": {
-    "@ionic/angular-toolkit:component": {
-      "styleext": "scss"
-    },
-    "@ionic/angular-toolkit:page": {
-      "styleext": "scss"
-    },
     "@angular-eslint/schematics:application": {
       "setParserOptionsProject": true
     },

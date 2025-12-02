@@ -1,7 +1,0 @@
-{
-  "name": "pasteleriaApp",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular-standalone"
-}

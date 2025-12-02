@@ -17,6 +17,14 @@ ion-content.login-content {
   padding: 1.5rem;
 }
 
+app-login.ion-page-hidden {
+    z-index: 50 !important;
+}
+
+/* O, si no funciona el de arriba, usa un selector aún más agresivo */
+app-login.ion-page-hidden[style*="z-index"] {
+    z-index: 50 !important;
+}
 /* === Tarjeta del login === */
 .login-card {
   width: 100%;

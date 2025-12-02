@@ -44,7 +44,7 @@
         .pipe(catchError(this.handleError));
     }
     actualizarProductosBajoStock(): void {
-        this.http.get<any>(`${this.apiUrl}/stock_minimo`, { headers: this.getHeadersAuth() }).subscribe({
+        this.http.get<any>(`${this.apiUrl}/productos_bajo_stock`, { headers: this.getHeadersAuth() }).subscribe({
         next: (res) => {
             if (res.status) this.stockBajoSubject.next(res.data);
         },

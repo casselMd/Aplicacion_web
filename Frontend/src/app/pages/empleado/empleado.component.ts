@@ -10,6 +10,7 @@
     import { CommonModule } from '@angular/common';
     import {  EmpleadoService } from '../../services/empleado.service';
     import { Empleado } from '../../Models/empleado.model';
+    import { AuthService } from '../../services/auth.service';
 
     @Component({
     selector: 'app-empleado',
@@ -21,6 +22,7 @@
     export class EmpleadoComponent implements OnInit {
     empleados: Empleado[] = [];
     empleadosFiltrados: Empleado[] = [];
+    rol : string | null = '';
 
     formulario!: FormGroup;
     modoEdicion = false;
@@ -35,7 +37,8 @@
 
     constructor(
         private fb: FormBuilder,
-        private empleadoService: EmpleadoService
+        private empleadoService: EmpleadoService,
+        private authService : AuthService
     ) {
         this.formulario = this.fb.group({
         id: [null],
@@ -52,6 +55,7 @@
 
     ngOnInit(): void {
         this.obtenerEmpleados();
+        this.obtenerRol();
     }
 
     private obtenerEmpleados(): void {
@@ -62,6 +66,13 @@
             this.aplicarFiltros();
         }
         });
+    }
+
+    obtenerRol() {
+        this.authService.getRol().subscribe((rol)=>{
+        console.log('ROL RECIBIDO', rol);
+        this.rol = rol;
+        })
     }
 
     aplicarFiltros(): void {

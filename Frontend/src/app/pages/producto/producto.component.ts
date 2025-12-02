@@ -63,6 +63,7 @@
     }
     obtenerRol() {
         this.authService.getRol().subscribe((rol)=>{
+        console.log('ROL RECIBIDO', rol);
         this.rol = rol;
         })
     }

@@ -66,4 +66,15 @@ class Mysql extends Conexion {
         }
     }
 
+        public function beginTransaction() {
+        return $this->conexion->beginTransaction();
+    }
+
+    public function commit() {
+        return $this->conexion->commit();
+    }
+
+    public function rollback() {
+        return $this->conexion->rollBack();
+    }
 }

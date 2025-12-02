@@ -15,7 +15,6 @@ export interface VentaRegistro {
     id?:number,
     cliente_id: number;
     metodo_pago_id: number;
-    es_delivery :number;
     observaciones?: string;
     total: number;
     detalles: DetalleVentaRegistro[];
@@ -57,7 +56,6 @@ export interface Venta {
         id: number;
         nombre: string;
     };
-    es_delivery :number;
     detalles?: DetalleVentaListado[]; // Solo cuando se necesite ver detalle completo
 }
 

@@ -96,6 +96,9 @@ function fnGetEmpleadoIdToken(array $headers):int {
         if (!isset($headers['Authorization-Empleado']) || empty($headers) )  throw new Exception("Token del empleado no recibido");
 
         $token = $headers['Authorization-Empleado'];
+            if (empty($token)) {
+        throw new Exception("Token de empleado vacío");
+    }
         $decoded = JWT::decode($token, new Key(API_KEY, 'HS512'));
         //debug($decoded);
         if (!isset($decoded->data->id) ) throw new Exception("Token de empleado no válido: ID no encontrado.");
@@ -125,6 +128,14 @@ function getTokenApi() {
     return $request;
 }
 function fnValidateToken($token) {
+    
+    if (!$token || trim($token) === "" || $token === "null" || $token === "undefined") {
+        return [
+            "status" => false,
+            "msg" => "Token vacío o inválido"
+        ];
+    }
+
     $ch = curl_init();
     curl_setopt($ch, CURLOPT_URL, API_VALIDATE_TOKEN_URL. urlencode($token));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);

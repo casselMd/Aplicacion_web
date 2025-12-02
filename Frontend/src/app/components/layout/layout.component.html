@@ -1,11 +1,11 @@
 <!-- Layout completo -->
-<div class="h-[100vh] overflow-hidden flex flex-col bg-background text-black font-sans">
+<div class="h-[100vh]  flex flex-col bg-background text-black font-sans">
 
     <!-- Banner fijo en la parte superior -->
-    <div class="fixed top-0 left-3 w-[96%] z-50 bg-zinc-800 text-white flex items-center justify-between px-6 py-2 shadow-lg rounded-full mt-1 ml-3 mr-3 mb-2" >
+    <div class="fixed top-0 left-3 w-[96%]  bg-zinc-800 text-white flex items-center justify-between px-6 py-2 shadow-lg rounded-full mt-1 ml-3 mr-3 mb-2" >
         <!-- Nombre de la empresa con logo -->
         <div class="flex items-center space-x-2 text-xl font-semibold">
-        <img src="aqui_coloca_la_ruta_del_logo_cesar" alt="Logo" class="w-8 h-8 object-cover rounded-full  " />
+        <img src="../../../../photo/logo.jpeg" alt="Logo" class="w-8 h-8 object-cover rounded-full  " />
         <span>Panaderia Delicias</span>
         </div>
 
@@ -60,6 +60,7 @@
 
 
     <!-- Perfil personal -->
+    
     <div *ngIf="mostrarModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
     <div class="bg-card rounded-xl p-8 w-full max-w-xl space-y-6 shadow-xl">
         
@@ -136,11 +137,12 @@
         {{ mostrarCredenciales ? 'Ocultar' : 'Actualizar Credenciales' }}
     </button>
 
+    @if(mostrarCredenciales){
     <form
-        *ngIf="mostrarCredenciales"
         [formGroup]="credencialesForm"
         class="space-y-4 mt-4 bg-card p-5 rounded-lg shadow border"
     >
+    
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
             <label class="block text-sm font-medium text-text">Usuario</label>
@@ -171,6 +173,7 @@
         </button>
         </div>
     </form>
+}
     </div>
 
     </div>

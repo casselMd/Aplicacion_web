@@ -60,8 +60,8 @@
         this.productosFiltrados$ = this.controlProducto.valueChanges.pipe(
         startWith(''),
         map(value => {
-            const texto = typeof value === 'string' ? value : '';
-            return this._filter(texto);
+            const texto = typeof value === 'string' ? value : value?.nombre || '';
+            return texto? this._filter(texto): this.productos.slice();
         })
         );
         this.controlProducto.valueChanges.subscribe(producto => {
@@ -108,10 +108,27 @@
         this.prodSvc.listar().subscribe(r => { 
         if (r.status) {
             this.productos = r.data;
-            this.productos = this.productos.filter(p => p?.es_existente === 0 && p.status ===1)
+            console.log('Verificando productos:');
+        this.productos.forEach(p => {
+            console.log(`Producto: ${p.nombre}, es_existente: ${p.es_existente}, status: ${p.status}`);
+        });
+            this.productos = this.productos.filter(p => p?.es_existente === 1 && p.status ===1)
+            console.log('Cantidad de productos:', this.productos.length);
+            this.inicializarFiltroProductos();
+            
         } 
         });
     }
+
+    private inicializarFiltroProductos() {
+    this.productosFiltrados$ = this.controlProducto.valueChanges.pipe(
+        startWith(''),
+        map(value => {
+            const texto = typeof value === 'string' ? value : value?.nombre || '';
+            return texto ? this._filter(texto) : this.productos.slice();
+        })
+    );
+}
 
     
     
@@ -145,7 +162,13 @@
 
     registrarVenta() {
         if (this.ventaForm.invalid || this.products.length === 0) {
-        Swal.fire('Error', 'Datos incompletos.', 'warning');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Error',
+            text: 'Datos incompletos.',
+            // AÑADIDO: Forzar inyección en el body
+            target: 'body' 
+        });
         return;
         }
         
@@ -167,24 +190,54 @@
             this.mensaje = res.msg;
             this.ventaForm.reset();
             this.products = [];
-            Swal.fire('Registro', res.msg, 'success');
+            Swal.fire({
+                    icon: 'success',
+                    title: 'Registro',
+                    text: res.msg,
+                    // AÑADIDO: Forzar inyección en el body
+                    target: 'body'
+                });
             }else{
-            Swal.fire('Error', res.msg, 'error');
+            Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: res.msg,
+                    // AÑADIDO: Forzar inyección en el body
+                    target: 'body'
+                });
             }
             
         },
         error: () => {
-            Swal.fire('Error', 'No se pudo registrar la Compra', 'error');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'No se pudo registrar la Compra',
+                // AÑADIDO: Forzar inyección en el body
+                target: 'body'
+            });
         }
         });
     }
 
 
     ///angular material
-    private _filter(value: string): Producto[] {
-        const filterValue = value.toLowerCase();
-        return this.productos.filter(p => p.nombre.toLowerCase().includes(filterValue));
+private _filter(value: string): Producto[] {
+    if (!value || this.productos.length === 0) {
+        console.log('Sin filtro o sin productos:', this.productos.length);
+        return this.productos.slice();
     }
+    
+    const filterValue = value.toLowerCase().trim();
+    const filtrados = this.productos.filter(p => {
+        const nombre = p.nombre?.toLowerCase() || '';
+        console.log(`Comparando: "${nombre}" con "${filterValue}"`); // ⬅️ Ver cada comparación
+        return nombre.includes(filterValue);
+    });
+    
+    console.log('Filtrando:', value, 'Resultados:', filtrados);
+    return filtrados;
+}
 
     displayFn(producto: Producto): string {
         return producto && producto.nombre ? producto.nombre : '';

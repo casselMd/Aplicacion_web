@@ -21,7 +21,7 @@ class AuthGoogle extends Controller
         $code = $_GET['code'];
         $client_id = GOOGLE_CLIENT_ID;
         $client_secret = GOOGLE_CLIENT_SECRET;
-        $redirect_uri = 'http://localhost/Delicias/Backend/AuthGoogle/callback';
+        $redirect_uri = 'http://localhost/Delicias/Backend/AuthGoogle/callback/';
 
         $data = http_build_query([
             'code' => $code,

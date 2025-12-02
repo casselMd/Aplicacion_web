@@ -65,66 +65,78 @@
             <td class="px-2 py-2">S/ {{ venta.total | number: '1.2-2' }}</td>
             <td class="px-2 py-2 text-center">
                 <span
-                    [ngClass]="venta.es_delivery ? 'bg-sky-200 text-sky-800' : 'bg-yellow-200 text-yellow-800'"
-                    class="px-3 py-1 rounded-full text-xs font-semibold"
+                    class="px-2 py-1 rounded-full text-xs font-medium"
+                        [ngClass]="{
+                        'bg-green-100 text-green-800': venta.status === 1,
+                        'bg-red-100 text-red-800': venta.status === 0
+                    }"
                 >
-                    {{ venta.es_delivery ? 'Delivery' : 'Local' }}
+                    {{ venta.status ? "activo" : "inactivo" }}
                 </span>
             </td>
             <td class="px-1 py-2 space-x-1 text-center">
+            <div class="flex justify-center items-center space-x-2">
                 <button
                 title="Ver"
-                (click)="verVenta(venta.id)"
                 class="bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600"
+                (click)="verVenta(venta.id)"
                 >
                 <i class="fa-solid fa-eye fa-lg"></i>
                 </button>
                 
                 <!-- Dentro del <td> de acciones -->
+                @if (venta.status === 1){
                 <button
-                    *ngIf="venta.status === 2"
                     title="Editar"
                     (click)="editarVenta(venta.id)"
                     class="bg-yellow-500 text-white px-2 py-1 rounded hover:bg-yellow-600"
                     >
                     <i class="fas fa-edit fa-lg"></i>
                 </button>
+                }
 
-                <button *ngIf="venta.status === 2 "
+                @if (venta.status === 1){
+                <button
                     title="Confirmar"
                     (click)="confirmarVenta(venta.id)"
                     class="bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600"
                 >
                     <i class="fa-solid fa-check fa-lg"></i>
                 </button>
+                }
                 <button title="Descargar PDF"
                 class="bg-green-600 text-white px-2 py-1 rounded hover:bg-green-700 "
                 (click)="generarPDF(venta.id)">
                 <i class="fa-regular fa-file-pdf fa-xl"></i>
                 </button>
 
-                <button *ngIf="venta.status === 2   "
+                @if (venta.status === 1){
+                <button 
                 title="Cancelar"
                 (click)="cancelarVenta(venta.id)"
                 class="bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600"
                 >
                 <i class="fa-solid fa-trash fa-lg"></i>
                 </button>
-
+                }
+            </div>
             </td>
+            
             </tr>
-            <tr *ngIf="ventasFiltradas.length === 0">
-            <td colspan="7" class="text-center py-4 text-gray-500">
-                No se encontraron ventas con ese criterio.
-            </td>
-            </tr>
+            @if (ventasFiltradas.length === 0){
+                <tr >
+                    <td colspan="7" class="text-center py-4 text-gray-500">
+                        No se encontraron ventas con ese criterio.
+                    </td>
+                </tr>
+            }
         </tbody>
         </table>
     </div>
 
     <!-- Modal Detalle de Venta -->
+    @if(ventaSeleccionada){
     <div
-    *ngIf="ventaSeleccionada"
     id="modalVenta"
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
@@ -186,12 +198,14 @@
         </div>
     </div>
     </div>
+    }
 
 
 
 
     <!-- Modal de edición -->
-    <div *ngIf="ventaEnEditar" class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
+    @if(ventaEnEditar){
+    <div class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50 overflow-y-auto">
     <div class="bg-card rounded-lg shadow-lg p-6 w-full max-w-3xl max-h-[80vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-4">
         <h2 class="text-xl font-semibold text-text">Editar Venta ID {{ ventaEnEditar.id }}</h2>
@@ -203,7 +217,9 @@
         ></app-formulario-venta>
     </div>
     </div>
+    }
     </div>
 
-
-    <app-loader *ngIf="generandoPDF" [texto]="'Generando PDF...'"></app-loader>
+    @if(generandoPDF){
+    <app-loader [texto]="'Generando PDF...'"></app-loader>
+    }

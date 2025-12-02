@@ -50,7 +50,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let movimiento of movimientosFiltrados" class="hover:bg-nocturne-purple hover:bg-opacity-60">
+            @for (movimiento of movimientosFiltrados; track movimiento.idMovimiento) {
+            <tr class="hover:bg-nocturne-purple hover:bg-opacity-60">
             <td class="px-4 py-2">{{ movimiento.idMovimiento }}</td>
             <td class="px-4 py-2">{{ movimiento?.producto?.nombre }}</td>
             <td class="px-4 py-2">{{ movimiento?.tipo_movimiento?.nombre }}</td>
@@ -72,9 +73,12 @@
                 </button>
             </td>
             </tr>
-            <tr *ngIf="movimientosFiltrados.length === 0">
-            <td colspan="7" class="text-center py-4 text-gray-500">No se encontraron movimientos.</td>
-            </tr>
+        }
+            @if(movimientosFiltrados.length === 0){
+                <tr>
+                    <td colspan="7" class="text-center py-4 text-gray-500">No se encontraron movimientos.</td>
+                </tr>
+            }
         </tbody>
         </table>
     </div>
@@ -82,8 +86,8 @@
     
     </div>
     <!-- Modal Detalle -->
+    @if(movimientoSeleccionado){
     <div
-    *ngIf="movimientoSeleccionado"
     id="modalInventario"
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
@@ -119,3 +123,4 @@
         </div>
     </div>
     </div>
+}

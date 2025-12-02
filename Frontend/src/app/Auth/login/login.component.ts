@@ -4,13 +4,7 @@ import { Router, RouterLinkWithHref } from '@angular/router';
 import Swal from 'sweetalert2';
 import { AuthService, getPayloadToken } from '../../services/auth.service';
 import { environment } from '../../../environments/environment';
-import { addIcons } from 'ionicons';
-import { lockClosedOutline, personOutline } from 'ionicons/icons';
 import { CommonModule } from '@angular/common';
-import {
-  IonButton, IonContent, IonIcon, IonItem, IonInput,
-  IonRippleEffect
-} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-login',
@@ -18,14 +12,8 @@ import {
   imports: [
     ReactiveFormsModule,
     RouterLinkWithHref,
-    IonContent,
-    IonItem,
-    IonIcon,
-    IonButton,
-    IonInput,
     CommonModule,
     FormsModule,
-    IonRippleEffect
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
@@ -43,7 +31,6 @@ export class LoginComponent {
       password: ['', Validators.required]
     });
 
-    addIcons({ personOutline, lockClosedOutline });
   }
 
   onSubmit() {
@@ -80,7 +67,7 @@ export class LoginComponent {
 
   loginConGoogle() {
     const clientId = environment.client_id;
-    const redirectUri = 'http://localhost/Delicias/Backend/AuthGoogle/callback';
+    const redirectUri = 'http://localhost/Delicias/Backend/AuthGoogle/callback/';
     const scope = 'email profile';
     const responseType = 'code';
 

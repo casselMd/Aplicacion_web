@@ -257,6 +257,32 @@ class Producto extends Controller {
         }
     }
 
+    public function productos_bajo_stock()
+        {
+            try {
+                if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+                    throw new Exception('Método no permitido.', 405);
+                }
+
+                $limit = isset($_GET['limite']) ? intval($_GET['limite']) : 10;
+
+                // Llamamos al modelo
+                $res = $this->model->productosBajoStock($limit);
+
+                jsonResponse([
+                    'status' => true,
+                    'data'   => $res
+                ], 200);
+
+            } catch(Exception $e) {
+                jsonResponse([
+                    'status' => false,
+                    'msg'    => 'ERROR: ' . $e->getMessage()
+                ], $e->getCode() ?: 400);
+            }
+        }
+
+
 
     // Eliminar un producto (eliminación física).
     public function eliminar($id_producto) {

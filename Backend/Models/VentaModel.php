@@ -2,6 +2,7 @@
 
 
 require_once("Models/ProductoModel.php");
+require_once("Models/InventarioModel.php");
 
 class VentaModel extends Mysql {
     private $id;
@@ -9,17 +10,15 @@ class VentaModel extends Mysql {
     private $fecha; // Instancia de DateTime
     private $total;
     private $metodoPago; // Instancia de MetodoPagoModel
-    private $es_delivery ;
     private $cliente; // Instancia de ClienteModel
     private $detalleVentas = []; // Array de DetalleVentaModel
 
-    public function __construct($id = 0, $empleado = null, $fecha = null, $total = 0.0, $metodoPago = null, $es_delivery= null, $cliente = null, $detalleVentas = []) {
+    public function __construct($id = 0, $empleado = null, $fecha = null, $total = 0.0, $metodoPago = null, $cliente = null, $detalleVentas = []) {
         $this->id = $id;
         $this->empleado = $empleado;
         $this->fecha = $fecha ;
         $this->total = $total;
         $this->metodoPago = $metodoPago;
-        $this->es_delivery = $es_delivery;
         $this->cliente = $cliente;
         $this->detalleVentas = $detalleVentas;
         parent::__construct();
@@ -78,15 +77,6 @@ class VentaModel extends Mysql {
     public function setMetodoPago($metodoPago) {
         $this->metodoPago = $metodoPago;
     }
-    
-
-    public function setDelivery($valor) {
-        $this->es_delivery = (int) $valor;
-    }
-
-    public function isDelivery() {
-        return $this->es_delivery;
-    }
 
     public function setCliente($cliente) {
         $this->cliente = $cliente;
@@ -130,8 +120,7 @@ class VentaModel extends Mysql {
                 'metodo_pago' => [
                     'id' => (int)$row['metodo_pago_id'],
                     'nombre' => $row['metodo_pago_nombre'],
-                ],
-                "es_delivery" => $row["es_delivery"]
+                ]
             ];
         }
 
@@ -146,13 +135,12 @@ class VentaModel extends Mysql {
             $metodoPago_id = is_object($this->metodoPago) ? $this->metodoPago->getId() : $this->metodoPago;
             $cliente_id = is_object($this->cliente) ? $this->cliente->getId() : $this->cliente;
 
-            $sql = "INSERT INTO venta (empleado_id, total, metodo_pago_id,es_delivery ,cliente_id,status) VALUES (:empleado_id, :total, :metodo_pago_id, :es_delivery,:cliente_id,:status)";
+            $sql = "INSERT INTO venta (empleado_id, total, metodo_pago_id ,cliente_id,status) VALUES (:empleado_id, :total, :metodo_pago_id,:cliente_id,:status)";
             $arrData = [
                 ":empleado_id"   => $empleado_id,
                 //":fecha"         => $this->fecha,
                 ":total"         => $this->total,
                 ":metodo_pago_id" => $metodoPago_id,
-                ":es_delivery"    => $this->es_delivery,
                 ":cliente_id"    => $cliente_id,
                 "status"         => 2
             ];
@@ -227,8 +215,7 @@ class VentaModel extends Mysql {
                         empleado_id = :empleado_id,
                         cliente_id = :cliente_id,
                         total = :total,
-                        metodo_pago_id = :metodo_pago_id,
-                        es_delivery = :es_delivery
+                        metodo_pago_id = :metodo_pago_id
                     WHERE id = :id";
 
             $params = [
@@ -236,7 +223,6 @@ class VentaModel extends Mysql {
                 ":cliente_id"     => $cliente_id,
                 ":total"          => $this->total,
                 ":metodo_pago_id" => $metodoPago_id,
-                ":es_delivery" => $this->es_delivery,
                 ":id"             => $this->id
             ];
             $resVenta = $this->update($sql, $params);
@@ -340,7 +326,6 @@ class VentaModel extends Mysql {
                 'id' => (int)$row['metodo_pago_id'],
                 'nombre' => $row['metodo_pago_nombre'],
             ],
-            "es_delivery" => $row["es_delivery"]
         ];
 
         // Traer los detalles de la venta (unir con productos si deseas más info)
@@ -422,7 +407,6 @@ class VentaModel extends Mysql {
             }
     }
 
-
     public function productosMasVendidos(int $limit ): array
     {
         $sql = "
@@ -498,30 +482,69 @@ class VentaModel extends Mysql {
             throw $e;
         }
     }
-    public function obtenerVentasPorTipoAtencion() {
-        try {
-            $sql = "SELECT 
+
+    public function obtenerVentasMensuales() {
+    try {
+
+        // Consulta: obtiene el nombre del mes y la cantidad de ventas reales
+        $sql = "SELECT 
                     DATE_FORMAT(fecha, '%Y-%m') AS mes,
-                    CASE 
-                        WHEN es_delivery = 1 THEN 'Delivery'
-                        ELSE 'Local'
-                    END AS canal,
+                    DATE_FORMAT(fecha, '%b') AS mes_nombre,
                     COUNT(*) AS total
                 FROM venta
-                WHERE status = 1
-                AND fecha >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
-                GROUP BY mes, canal
-                ORDER BY mes ASC
-            ";
-            return $this->selectAll($sql);
-        } catch (Exception $e) {
-            throw $e;
+                WHERE fecha >= DATE_SUB(CURDATE(), INTERVAL 12 MONTH)
+                GROUP BY mes
+                ORDER BY mes ASC";
+
+        $resultados = $this->selectAll($sql);
+
+        // Mapeo de meses abreviados en inglés a español
+        $meses = [
+            'Jan' => 'Ene',
+            'Feb' => 'Feb',
+            'Mar' => 'Mar',
+            'Apr' => 'Abr',
+            'May' => 'May',
+            'Jun' => 'Jun',
+            'Jul' => 'Jul',
+            'Aug' => 'Ago',
+            'Sep' => 'Sep',
+            'Oct' => 'Oct',
+            'Nov' => 'Nov',
+            'Dec' => 'Dic'
+        ];
+
+        // Inicializamos los 12 meses con 0
+        $ventas = [];
+
+        for ($i = 11; $i >= 0; $i--) {
+            $mesKey = date('Y-m', strtotime("-$i month"));
+            $mesAbrevIng = date('M', strtotime("-$i month"));
+            $mesAbrevEsp = $meses[$mesAbrevIng];
+
+            $ventas[$mesKey] = [
+                'mes'   => $mesAbrevEsp,
+                'total' => 0
+            ];
         }
+
+        // Llenar con datos reales desde la BD
+        foreach ($resultados as $fila) {
+            $mesKey = $fila['mes']; // Y-m
+            $mesIng = $fila['mes_nombre'];
+
+            if (isset($meses[$mesIng])) {
+                $ventas[$mesKey]['total'] = (int)$fila['total'];
+            }
+        }
+
+        // Convertir a un array simple para enviarlo al frontend
+        return array_values($ventas);
+
+    } catch (Exception $e) {
+        throw $e;
     }
-
-
-
-
+}
 
     
 }

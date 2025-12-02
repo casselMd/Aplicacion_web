@@ -1,22 +1,23 @@
 <?php 
 require_once("Models/EmpleadoModel.php");
 class Inventario extends Controller {
-    private $empleado;
+    private $empleado_id;
+    
     public function __construct() {
         try {
             $arrHeaders = getallheaders();
             $hasAuth = fnAuthorization($arrHeaders);
-            $id_empleado = fnGetEmpleadoIdToken($arrHeaders);
+            $this->empleado_id = fnGetEmpleadoIdToken($arrHeaders);
             
             
         } catch (Exception $e) {
             jsonResponse(["status" => false, "msg" => "ERROR: " . $e->getMessage()], $e->getCode() ?: 401);
             die();
         }
+        file_put_contents("debug_headers.txt", print_r(getallheaders(), true));
+
         parent::__construct();
-        $this->empleado = new EmpleadoModel();
-        $this->empleado->setId($id_empleado);
-        $this->empleado = $this->empleado->getEmpleado();
+    
     }
 
     public function registrar() {
@@ -37,17 +38,18 @@ class Inventario extends Controller {
             $this->model->setCantidad($post["cantidad"]);
             $this->model->setObservaciones($post["observaciones"] ?? "");
             $this->model->setStatus(1);
-            $this->model->setEmpleadoId($this->empleado->getId()); // ← Viene del JWT
+            $this->model->setEmpleadoId($this->empleado_id); // ← Viene del JWT
 
-            $idInsertado = $this->model->agregar();
+            $idInsertado = $this->model->agregar(); 
             if ($idInsertado > 0) {
                 jsonResponse(["status" => true, "msg" => "Movimiento registrado.", "data" => ["id" => $idInsertado]], 201);
             } else {
                 throw new Exception("Error al registrar movimiento.");
             }
         } catch (Exception $e) {
-            jsonResponse(["status" => false, "msg" => "ERROR: " . $e->getMessage()], $e->getCode() ?: 400);
+            jsonResponse(["status" => false, "msg" => "ERROR: " . $e->getMessage()."empleado:". $this->empleado_id], (int)$e->getCode() ?: 400);
         }
+        exit;
     }
 
     public function actualizar($idMovimiento) {
@@ -64,7 +66,7 @@ class Inventario extends Controller {
             $this->model->setFecha($put["fecha"]);
             $this->model->setObservaciones($put["observaciones"] ?? "");
             $this->model->setStatus($put["status"] ?? 1);
-            $this->model->setEmpleadoId($this->empleado->getId());
+            $this->model->setEmpleadoId($this->empleado_id);
 
             $result = $this->model->actualizar();
             jsonResponse(["status" => true, "msg" => "Movimiento actualizado."], 200);

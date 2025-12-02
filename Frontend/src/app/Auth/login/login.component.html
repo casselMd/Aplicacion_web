@@ -1,4 +1,4 @@
-<ion-content class="login-content">
+<div class="login-content">
   <div class="login-container">
 
     <!-- Panel principal -->
@@ -11,45 +11,43 @@
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="formulario">
 
           <!-- Usuario -->
-          <ion-item lines="none" class="input-item">
-            <ion-icon name="person-outline" slot="start" class="input-icon"></ion-icon>
-            <ion-input
+          <div class="input-item">
+            <i class="icon input-icon fas fa-user"></i>
+            <input
               id="username"
               formControlName="username"
               type="email"
               placeholder="Nombre de Usuario"
               class="input-field"
-            ></ion-input>
-          </ion-item>
+            />
+          </div>
 
           <!-- Contraseña -->
-          <ion-item lines="none" class="input-item">
-            <ion-icon name="lock-closed-outline" slot="start" class="input-icon"></ion-icon>
-            <ion-input
+          <div class="input-item">
+            <i class="icon input-icon fas fa-lock"></i>
+            <input
               id="password"
               formControlName="password"
               type="password"
               placeholder="Contraseña"
               class="input-field"
-            ></ion-input>
-          </ion-item>
+            />
+          </div>
 
           <!-- Botón principal -->
-          <ion-button
-            expand="block"
+          <button
             type="submit"
             class="btn-login ion-margin-top"
           >
             Iniciar Sesión
-          </ion-button>
+          </button>
 
         </form>
 
         <!-- Google -->
-        <ion-button
-          expand="block"
-          fill="outline"
+        <button
           class="btn-google ion-margin-top"
+          type="button"
           (click)="loginConGoogle()"
         >
           <img
@@ -58,7 +56,7 @@
             class="google-icon"
           />
           <span>Iniciar sesión con Google</span>
-        </ion-button>
+        </button>
 
         <!-- Recuperar contraseña -->
         <div class="recuperar">
@@ -74,13 +72,11 @@
         </div>
       </div>
 
-      <!-- Imagen lateral -->
-      <!-- <div class="imagen-section">
-        <img src="assets/logo.png" alt="Panadería Delicias" class="imagen-logo" />
-      </div> -->
     </div>
 
   </div>
+
+  <!-- Forma de fondo -->
   <div class="background-shapes">
     <div class="shape shape1"></div>
     <div class="shape shape2"></div>
@@ -88,4 +84,4 @@
     <div class="shape shape4"></div>
     <div class="shape shape5"></div>
   </div>
-</ion-content>
+</div>

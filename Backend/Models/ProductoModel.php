@@ -254,4 +254,31 @@ class ProductoModel extends Mysql {
     {
         $this->es_existente = $es_existente;
     }
+
+        public function productosBajoStock(int $limit = 10): array
+        {
+            $sql = "
+                SELECT
+                    p.id                 AS id,
+                    p.nombre             AS nombre,
+                    p.stock              AS stock,
+                    p.precio             AS precio
+                FROM producto p
+                WHERE p.stock > 0
+                ORDER BY p.stock ASC
+                LIMIT $limit
+            ";
+            
+            $rows = $this->selectAll($sql);
+
+            // Mapear tipos
+            return array_map(function($r) {
+                return [
+                    'id'     => (int)$r['id'],
+                    'nombre' => $r['nombre'],
+                    'stock'  => (int)$r['stock'],
+                    'precio' => (float)$r['precio']
+                ];
+            }, $rows);
+        }
 }

@@ -47,13 +47,16 @@
 
     <!-- Autocompletado -->
     <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn" autoActiveFirstOption>
-        <mat-option
-        *ngFor="let option of productosFiltrados$ | async"
-        [value]="option"
-        class="!bg-gray-100 !text-gray-800 hover:!bg-gray-200"
-        >
-        {{ option.nombre }}
-        </mat-option>
+        @if (productosFiltrados$ | async; as productos) {
+            @for (option of productos; track option.id) {
+                <mat-option
+                [value]="option"
+                class="!bg-gray-100 !text-gray-800 hover:!bg-gray-200"
+                >
+                {{ option.nombre }}
+                </mat-option>
+            }
+        }
     </mat-autocomplete>
     </div>
 
@@ -64,10 +67,11 @@
         <input
             id="precio"
             type="number"
-            [attr.aria-label]="'Precio referencial del producto'"
             class="w-full border border-gray-300 rounded px-3 py-2 bg-card"
-            [value]="productoSeleccionado?.precio ??0"
-            readonly
+            [value]="productoSeleccionado?.precio || 0"
+            aria-label="Precio del producto"
+            placeholder="Precio del producto"
+            disabled
         />
         </div>
 
@@ -96,13 +100,14 @@
             required
         >
             <option value="" disabled selected>— Selecciona un tipo —</option>
-            <option
-            *ngFor="let tipo of tiposMovimiento"
-            [value]="tipo.id"
-            class="!bg-gray-100 !text-gray-800 hover:!bg-gray-200"
-            >
-            {{ tipo.nombre }}
-            </option>
+            @for (tipo of tiposMovimiento; track tipo.id) {
+                <option
+                [value]="tipo.id"
+                class="!bg-gray-100 !text-gray-800 hover:!bg-gray-200"
+                >
+                {{ tipo.nombre }}
+                </option>
+            }
         </select>
         </div>
         

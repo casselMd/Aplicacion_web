@@ -20,9 +20,9 @@
     styleUrls: ['./ventas-mensual.component.css']
     })
     export class VentasMensualComponent implements OnInit {
-    
+
     @ViewChild(BaseChartDirective) chart: BaseChartDirective | undefined;
-    
+
     public barData: ChartConfiguration<'bar'>['data'] = {
         labels: [],
         datasets: [
@@ -55,38 +55,62 @@
         }
     };
 
-    public heatmapData: any[] = [];
-    public heatmapLabels: string[] = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+    public heatmapData: number[] = [];
+    public heatmapLabels: string[] = [
+        'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+        'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
+    ];
 
     constructor(
-        private ventaService: VentaService, 
+        private ventaService: VentaService,
         private cdr: ChangeDetectorRef
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.cargarDatos();
     }
 
     private cargarDatos(): void {
-        this.ventaService.ventasMensual().subscribe(res => {
-        if (!res.status || !res.data) return;
-        
-        const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
-        const valores = meses.map(mes => {
-            const mesData = res.data.find((r: any) => r.mes === mes) || { total: 0 };
-            return mesData.total;
-        });
+        this.ventaService.ventasMensual().subscribe({
+        next: (res) => {
+            // 🔒 Validación robusta
+            if (!res || typeof res !== 'object') {
+            console.error("Respuesta inválida del backend:", res);
+            return;
+            }
 
-        // Chart.js - Barras
-        this.barData.labels = meses;
-        this.barData.datasets[0].data = valores;
+            if (!('status' in res) || !res.status) {
+            console.warn("Respuesta sin status TRUE:", res);
+            return;
+            }
 
-        // Datos para heatmap personalizado
-        this.heatmapData = valores;
+            if (!Array.isArray(res.data)) {
+            console.warn("res.data no es un arreglo:", res.data);
+            return;
+            }
 
-        // Actualizar el gráfico
-        this.chart?.update();
-        this.cdr.detectChanges();
+            const meses = this.heatmapLabels;
+
+            const valores = meses.map(mes => {
+            const mesData = res.data.find((r: any) => r.mes === mes);
+            return mesData ? Number(mesData.total) : 0;
+            });
+
+            // Chart.js
+            this.barData.labels = meses;
+            this.barData.datasets[0].data = valores;
+
+            // Heatmap
+            this.heatmapData = valores;
+
+            // Forzar actualización visual
+            this.chart?.update();
+            this.cdr.detectChanges();
+        },
+
+        error: (error) => {
+            console.error("Error HTTP:", error);
+        }
         });
     }
 

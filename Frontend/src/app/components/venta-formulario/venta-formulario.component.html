@@ -99,7 +99,8 @@
     </div>
 
     <!-- Tabla de productos agregados -->
-    <div *ngIf="detalles.length > 0 " class="mt-6 overflow-x-auto bg-card rounded-t-lg">
+    @if(detalles.length > 0) {
+    <div class="mt-6 overflow-x-auto bg-card rounded-t-lg">
         <table class="bg-card w-full text-sm  ">
         <thead>
             <tr class="bg-tabla text-left bg-opacity-25  uppercase">
@@ -131,6 +132,7 @@
         Total: {{ getTotal() | currency:'S/.' }}
         </div>
     </div>
+}
 
     <!-- Botón Registrar -->
     <div class="mt-6 text-right">

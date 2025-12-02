@@ -108,8 +108,7 @@
     private initForm() {
         this.ventaForm = this.fb.group({
         cliente_id: [null, Validators.required],
-        metodo_pago_id: [null, Validators.required],
-        es_delivery : 0
+        metodo_pago_id: [null, Validators.required]
         });
     }
 
@@ -200,7 +199,6 @@
             id: this.ventaEditar.id,
             cliente_id: this.ventaForm.value.cliente_id,
             metodo_pago_id: this.ventaForm.value.metodo_pago_id,
-            es_delivery : this.ventaForm.value.es_delivery,
             observaciones: this.ventaForm.value.observaciones,
             total: this.getTotal(),
             detalles: this.detalles
@@ -211,7 +209,6 @@
             const payload: VentaRegistro = {
             total: this.getTotal(),
             metodo_pago_id: this.ventaForm.value.metodo_pago_id,
-            es_delivery : this.ventaForm.value.es_delivery,
             cliente_id: this.ventaForm.value.cliente_id,
             observaciones: this.ventaForm.value.observaciones,
             detalles: this.detalles
@@ -219,8 +216,9 @@
             // console.log('payload Venta : ', payload);
 
             this.ventaSvc.registrar(payload).subscribe({
-            next: () => {
+            next: (res) => {
                 this.mensaje = 'Venta registrada con éxito';
+                console.log('Venta registrada:', res);
                 this.ventaForm.reset();
                 this.detalles = [];
                 Swal.fire('Registrado', 'Venta pendiente por confirmar', 'success');

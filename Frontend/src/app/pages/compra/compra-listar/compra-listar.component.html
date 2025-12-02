@@ -33,9 +33,11 @@
     </div>
 
 
-    <div *ngIf="compras.length === 0" class="text-gray-600">
+    @if(compras.length === 0){
+    <div class="text-gray-600">
         No hay compras registradas.
     </div>
+    }
 
     <div *ngIf="compras.length > 0" class="overflow-auto rounded-xl">
     <table class="min-w-full bg-card rounded-lg shadow-lg">
@@ -90,13 +92,15 @@
                 <i class="fa-regular fa-file-pdf fa-xl"></i>
                 </button>
 
-                <button *ngIf="compra.status !== 1"
+                @if(compra.status === 1){
+                <button
                 title="Cancelar"
                 class="bg-red-600  text-white px-2 py-1 rounded hover:bg-red-700 transition"
                 (click)="cancelarCompra(compra.id)"
                 >
                 <i class="fa-solid fa-trash fa-lg"></i>
                 </button>
+                }
 
             </div>
 
@@ -110,8 +114,8 @@
 
 
     <!-- Modal -->
+    @if(compraSeleccionada){
     <div
-    *ngIf="compraSeleccionada"
     id="modalCompra"
     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
     >
@@ -124,6 +128,9 @@
         <div>
             <h1 class="text-2xl font-bold">Factura de Compra</h1>
             <p class="text-sm text-white/70">ID: {{ compraSeleccionada.id }}</p>
+            <div>
+                <img src="../../../../../photo/logo.jpeg" alt="imagen del logo">
+            </div>
         </div>
         <button
             class="text-white hover:text-red-400 text-2xl"
@@ -181,7 +188,7 @@
         </div>
     </div>
     </div>
-
+    }
 
 
     <app-loader *ngIf="generandoPDF" [texto]="'Generando PDF...'"></app-loader>

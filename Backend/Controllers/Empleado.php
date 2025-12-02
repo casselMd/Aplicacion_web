@@ -459,32 +459,37 @@ class Empleado extends Controller {
     public function validar_token($token) {
         try {
             $method = $_SERVER["REQUEST_METHOD"];
-            $response = [];
-            $code = 200;
-    
-            if ($method == "GET") {
-                if(empty($token)) throw new Exception("Token no recibido");
-                // Validamos el token con una función helper (asumida: validateToken)
-                $result = fnValidateToken($token);
-                
-            if (!is_array($result) || !isset($result["status"])) {
-                throw new Exception("Error al validar el token.");
+
+            if ($method !== "GET") {
+                throw new Exception("Error en la solicitud {$method}. Solo se permite GET.", 405);
             }
 
-                if ($result["status"] == true) {
-                    $response = [
-                        "status" => true,
-                        "msg"    => "Token válido(limitado).",
-                        //"data"   => $result["data"]  // Datos decodificados del token
-                    ];
-                } else {
-                    throw new Exception("Token inválido o expirado.");
-                }
-            } else {
-                throw new Exception("Error en la solicitud {$method}.");
+            if (empty($token)) {
+                throw new Exception("Token no recibido.", 400);
             }
+
+            // Validar token usando la función helper
+            $result = fnValidateToken($token);
+
+            if (!is_array($result) || !isset($result["status"])) {
+                throw new Exception("Error interno al validar el token.", 500);
+            }
+
+            if ($result["status"] === true) {
+                // Token válido
+                $response = [
+                    "status" => true,
+                    "msg"    => "Token válido.",
+                    "data"   => $result["data"] ?? null  // Puedes decidir si lo envías o no
+                ];
+                $code = 200;
+            } else {
+                throw new Exception("Token inválido o expirado.", 401);
+            }
+
             jsonResponse($response, $code);
             die();
+
         } catch (Exception $e) {
             $response = [
                 "status" => false,

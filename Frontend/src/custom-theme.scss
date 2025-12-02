@@ -3,3 +3,19 @@
 // For more information: https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 
+    .swal2-container {
+    z-index: 100000 !important;
+    }
+
+    .swal2-popup {
+    z-index: 100001 !important;
+    }
+
+    ion-app > ion-router-outlet > app-layout {
+    z-index: 50 !important;
+}
+
+/* Selector alternativo (si usas la clase por defecto de Ionic) */
+.ion-page-hidden {
+    z-index: 50 !important;
+}
